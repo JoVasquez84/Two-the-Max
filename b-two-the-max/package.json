@@ -1,0 +1,28 @@
+{
+  "name": "b-two-the-max",
+  "version": "1.0.0",
+  "description": "asset management app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoVasquez84/Two-the-Max.git"
+  },
+  "author": "Jo Vasquez, Elijah McEntee, Michael Pingleton, Young Cho",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoVasquez84/Two-the-Max/issues"
+  },
+  "homepage": "https://github.com/JoVasquez84/Two-the-Max#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jest": "^27.0.6",
+    "knex": "^0.21.21",
+    "pg": "^8.7.1"
+  },
+  "devDependencies": {
+    "supertest": "^6.1.5"
+  }
+}

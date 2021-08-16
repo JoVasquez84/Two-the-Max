@@ -38,6 +38,8 @@ bower_components
 build/Release
 
 # Dependency directories
+b-two-the-max/node_modules/
+f-two-the-max/node_modules/
 node_modules/
 jspm_packages/
 
