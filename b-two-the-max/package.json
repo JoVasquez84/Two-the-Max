@@ -4,6 +4,7 @@
   "description": "asset management app",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,6 +21,7 @@
     "express": "^4.17.1",
     "jest": "^27.0.6",
     "knex": "^0.21.21",
+    "nodemon": "^2.0.12",
     "pg": "^8.7.1"
   },
   "devDependencies": {
