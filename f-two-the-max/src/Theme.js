@@ -1,14 +1,34 @@
-import { Button, ButtonGroup, Grid, TextField, createTheme, Input, Divider } from '@material-ui/core'
+import { ButtonGroup, Grid, TextField, createTheme, Input, Divider } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
-import { blueGrey } from '@material-ui/core/colors'
+import { blueGrey, cyan } from '@material-ui/core/colors'
 
-const Theme = makeStyles((theme) => ({
+const Theme = createTheme ({
   root: {
     backgroundColor: blueGrey[500],
   },
-  toolPage: {
-    spacing: 4
+  palette: {
+    primary: {
+      main: blueGrey[900],
+    },
+    secondary: {
+      main: cyan[200],
+    }
+  }
+})
+
+Theme.button ={
+  buttonGroup: {
+    variant: 'contained',
+    color: Theme.palette.text.primary,
+    spacing: 4,
   },
+  button: {
+    variant: 'contained',
+    color: Theme.palette.secondary.main,
+  },
+}
+/*
+const Buttons = makeStyles(theme => ({
   buttonGroup: {
     variant: 'contained',
     color: theme.palette.text.primary,
@@ -16,9 +36,19 @@ const Theme = makeStyles((theme) => ({
   },
   button: {
     variant: 'contained',
-    color: theme.palette.text.secondary,
-    color: theme.palette.background.secondaryn
-  }
-}));
+    color: theme.palette.secondary.main,
+  },
+}))
+*/
 
-export default Theme
+const UiStyling = makeStyles(theme => ({
+  toolPage: {
+    spacing: 4
+  },
+  personnelSearchBox: {
+    width: '90%',
+    marginLeft: '10%'
+  }
+}))
+
+export {Theme, UiStyling}
