@@ -2,7 +2,7 @@ import { ButtonGroup, Grid, TextField, createTheme, Input, Divider } from '@mate
 import { makeStyles } from '@material-ui/core/styles';
 import { blueGrey, cyan } from '@material-ui/core/colors'
 
-const Theme = createTheme ({
+const Theme = createTheme({
   root: {
     backgroundColor: blueGrey[500],
   },
@@ -15,18 +15,6 @@ const Theme = createTheme ({
     }
   }
 })
-
-Theme.button ={
-  buttonGroup: {
-    variant: 'contained',
-    color: Theme.palette.text.primary,
-    spacing: 4,
-  },
-  button: {
-    variant: 'contained',
-    color: Theme.palette.secondary.main,
-  },
-}
 /*
 const Buttons = makeStyles(theme => ({
   buttonGroup: {
@@ -43,12 +31,26 @@ const Buttons = makeStyles(theme => ({
 
 const UiStyling = makeStyles(theme => ({
   toolPage: {
-    spacing: 4
+    spacing: 4,
+    borderStyle: 'solid',
+    borderRadius: 16
+  },
+  hardwarePage: {
+    borderStyle: 'solid',
+    borderRadius: 16
+  },
+  repairPage: {
+    borderStyle: 'solid',
+    borderRadius: 16
   },
   personnelSearchBox: {
+    width: '90%',
+    marginLeft: '10%'
+  },
+  toolSearchBox: {
     width: '90%',
     marginLeft: '10%'
   }
 }))
 
-export {Theme, UiStyling}
+export { Theme, UiStyling }
