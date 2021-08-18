@@ -9,23 +9,22 @@ import IssuedTools from './tools/IssuedTools';
 import UnissuedTools from './tools/UnissuedTools';
 import Personnel from './personnel/Personnel';
 import Footer from './Footer';
+import { Route } from 'react-router-dom';
 
 const sections = [
-  { title: 'Issued Tools', url: '#' },
-  { title: 'Unissued Tools', url: '#' },
-  { title: 'Personnel', url: '#' }
+  { title: 'Issued Tools', url: '/IssuedTools/' },
+  { title: 'Unissued Tools', url: '/UnissuedTools/' },
+  { title: 'Personnel', url: '/Personnel/' }
 ];
 
-const Home = () => {
+const Home = ({ MainTable }) => {
   return (
     <React.Fragment>
       <CssBaseline />
       <Container maxWidth="lg">
         <Header title="Two The Max" sections={sections} />
         <main>
-          <IssuedTools />
-          <UnissuedTools />
-          <Personnel />
+          <MainTable />
           <Grid container spacing={4}>
             <Hardware />
             <BrokenTools />

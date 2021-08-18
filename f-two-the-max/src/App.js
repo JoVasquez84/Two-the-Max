@@ -1,14 +1,26 @@
 import './App.css';
 import Home from './components/Home.js';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Redirect, Switch } from 'react-router-dom';
+import IssuedTools from './components/tools/IssuedTools.js'
+import UnissuedTools from './components/tools/UnissuedTools.js'
+import Personnel from './components/personnel/Personnel.js'
 
 function App() {
   return (
     <Router>
-      <div className="App">
-          <Home />
-      </div>
-    </Router>
+      <Switch>
+        <Redirect exact from='/' to='/IssuedTools' />
+        <Route exact path="/IssuedTools/">
+          <Home MainTable={IssuedTools} />
+        </Route>
+        <Route exact path="/UnissuedTools/">
+          <Home MainTable={UnissuedTools} />
+        </Route>
+        <Route exact path="/Personnel/">
+          <Home MainTable={Personnel} />
+        </Route>
+      </Switch>
+    </Router >
   );
 }
 
