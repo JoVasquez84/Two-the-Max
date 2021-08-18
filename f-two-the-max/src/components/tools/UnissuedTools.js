@@ -118,6 +118,8 @@ export default function UnissuedTools() {
             columns={columns}
             checkboxSelection
             disableSelectionOnClick
+            onSelectionModelChange={newSelectedRows => setSelectedRows(newSelectedRows)}
+            selectionModel={selectedRows}
             disableColumnMenu={true}
           />
         </Grid>

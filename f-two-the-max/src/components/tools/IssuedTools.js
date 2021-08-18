@@ -30,7 +30,7 @@ const columns = [
   {
     field: 'toolId',
     headerName: 'Tool ID',
-    type: 'text',
+    type: 'number',
     minWidth: 150,
     editable: false,
   },
@@ -112,6 +112,8 @@ export default function IssuedTools() {
       .then(data => setRows(data));
   }, [setRows]);
 
+  const [selectedRows, setSelectedRows] = useState([]);
+
   return (
     <Paper className={classes.IssuedTools} >
       <Grid container>
@@ -120,7 +122,11 @@ export default function IssuedTools() {
           <IconButton>
             <SearchIcon />
           </IconButton>
-          <Button variant='outlined'>Transfer Tools</Button>
+          <Button
+            variant='outlined'
+            disabled={selectedRows.length === 0}
+          >
+            Transfer Tools</Button>
         </Grid>
         <Grid className={classes.ToolTable} item xs={12}>
           <DataGrid
@@ -129,7 +135,9 @@ export default function IssuedTools() {
             columns={columns}
             checkboxSelection
             disableSelectionOnClick
-            disableColumnMenu={true}
+            onSelectionModelChange={newSelectedRows => setSelectedRows(newSelectedRows)}
+            selectionModel={selectedRows}
+            disableColumnMenu={false}
           />
         </Grid>
       </Grid>
