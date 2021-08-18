@@ -30,17 +30,10 @@ const useStyles = makeStyles((theme) => ({
 const columns = [
   {
     field: 'hardwareId',
-    headerName: 'NSN ID',
+    headerName: 'NSN / Part#',
     type: 'text',
-    minWidth: 75,
-    editable: false,
-  },
-  {
-    field: 'description',
-    headerName: 'Description',
-    type: 'text',
-    minWidth: 75,
     flex: 1,
+    minWidth: 120,
     editable: false,
   },
   {
@@ -51,17 +44,9 @@ const columns = [
     editable: true
   },
   {
-    field: 'unit',
-    headerName: 'Unit',
-    type: 'text',
-    width: 65,
-    editable: false,
-  },
-  {
     field: 'location',
     headerName: 'Location',
     type: 'text',
-    flex: 1,
     minWidth: 75,
     editable: false,
   }
@@ -71,42 +56,20 @@ const dummyRows = [
   {
     id: 1,
     hardwareId: 'nut-01',
-    description: 'nut',
     qty: 2,
-    unit: 'Dozen',
-    location: 'Random place'
+    location: '100'
   },
   {
     id: 2,
     hardwareId: 'nut-01',
-    description: 'nut',
     qty: 2,
-    unit: 'Unit',
-    location: 'Random place'
+    location: '100'
   },
   {
     id: 3,
     hardwareId: 'nut-01',
-    description: 'nut',
     qty: 2,
-    unit: 'Unit',
-    location: 'Random place'
-  },
-  {
-    id: 4,
-    hardwareId: 'nut-01',
-    description: 'nut',
-    qty: 2,
-    unit: 'Unit',
-    location: 'Random place'
-  },
-  {
-    id: 5,
-    hardwareId: 'nut-01',
-    description: 'nut',
-    qty: 2,
-    unit: 'Unit',
-    location: 'Random place'
+    location: '100'
   }
 ];
 

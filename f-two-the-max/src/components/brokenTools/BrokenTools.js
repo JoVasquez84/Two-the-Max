@@ -15,10 +15,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.white,
     marginBottom: theme.spacing(4)
   },
-  BrokenToolsSearchTextField: {
+  ToolSearchTextField: {
     verticalAlign: 'baseline'
   },
-  BrokenToolsMenu: {
+  ToolsMenu: {
     height: 'flex'
   },
   ToolTable: {
@@ -31,29 +31,14 @@ const columns = [
     field: 'toolId',
     headerName: 'Tool ID',
     type: 'text',
-    minWidth: 130,
-    editable: false,
-  },
-  {
-    field: 'description',
-    headerName: 'Description',
-    type: 'text',
-    minWidth: 170,
-    flex: 1,
-    editable: false,
-  },
-  {
-    field: 'manNumber',
-    headerName: 'MAN#',
-    type: 'text',
-    width: 75,
-    editable: false
-  },
-  {
-    field: 'issuedTo',
-    headerName: 'Issued To',
-    type: 'text',
     minWidth: 150,
+    editable: false,
+  },
+  {
+    field: 'servicable',
+    headerName: 'Servicable',
+    type: 'boolean',
+    minWidth: 125,
     editable: false,
   }
 ];
@@ -61,45 +46,13 @@ const columns = [
 const dummyRows = [
   {
     id: 1,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
     toolId: 'DRILSM-01',
-    description: 'Small Drill'
+    servicable: true
   },
   {
     id: 2,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
     toolId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 3,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    toolId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 4,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    toolId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 5,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    toolId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 6,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    toolId: 'DRILSM-01',
-    description: 'Small Drill'
+    servicable: false
   },
 ];
 
@@ -111,7 +64,7 @@ export default function BrokenTools() {
       <Paper className={classes.BrokenTools} >
         <Grid container>
           <Grid className={classes.ToolMenu} item xs={12}>
-            <TextField className={classes.ToolSearchTextField} placeholder='Search by Man# or Name'></TextField>
+            <TextField className={classes.ToolSearchTextField} placeholder='Search by Tool ID'></TextField>
             <IconButton>
               <SearchIcon />
             </IconButton>

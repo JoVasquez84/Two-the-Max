@@ -6,9 +6,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Route exact path="/">
           <Home />
-        </Route>
       </div>
     </Router>
   );
