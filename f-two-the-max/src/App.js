@@ -1,6 +1,6 @@
 import './App.css';
 import Home from './components/Home.js';
-import { BrowserRouter as Router, Route, Link, Redirect, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import IssuedTools from './components/tools/IssuedTools.js'
 import UnissuedTools from './components/tools/UnissuedTools.js'
 import Personnel from './components/personnel/Personnel.js'
