@@ -1,12 +1,11 @@
 // Update with your config settings.
+var dotenv = require('dotenv');
 
 module.exports = {
 
   development: {
-    client: 'sqlite3',
-    connection: {
-      filename: './dev.sqlite3'
-    }
+    client: 'pg',
+    connection: 'postgres://mpingleton:postgres@ping-vlu-01/tool_inventory'
   },
 
   staging: {
