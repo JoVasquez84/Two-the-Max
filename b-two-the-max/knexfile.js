@@ -5,7 +5,7 @@ module.exports = {
 
   development: {
     client: 'pg',
-    connection: 'postgres://mpingleton:postgres@ping-vlu-01/tool_inventory'
+    connection: 'postgres://postgres:docker@localhost:5432/twothemax'
   },
 
   staging: {

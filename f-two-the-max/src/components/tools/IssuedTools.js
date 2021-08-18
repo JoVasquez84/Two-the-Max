@@ -1,3 +1,4 @@
+// import backendServer from '../../backendServer.js';
 import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -28,14 +29,14 @@ const useStyles = makeStyles((theme) => ({
 
 const columns = [
   {
-    field: 'toolId',
+    field: 'tool_id',
     headerName: 'Tool ID',
     type: 'number',
     minWidth: 150,
     editable: false,
   },
   {
-    field: 'description',
+    field: 'descr',
     headerName: 'Description',
     type: 'text',
     minWidth: 200,
@@ -43,14 +44,14 @@ const columns = [
     editable: false,
   },
   {
-    field: 'manNumber',
+    field: 'man_number',
     headerName: 'MAN#',
     type: 'text',
     width: 75,
     editable: false
   },
   {
-    field: 'issuedTo',
+    field: 'lname',
     headerName: 'Issued To',
     type: 'text',
     minWidth: 200,
@@ -107,9 +108,10 @@ export default function IssuedTools() {
   const classes = useStyles();
   const [rows, setRows] = useState([]);
   useEffect(() => {
-    fetch('#')
+    fetch('http://localhost:3002/IssuedTools/')
       .then(response => response.json())
-      .then(data => setRows(data));
+      .then(data => setRows(data))
+      .then(data => console.log(rows))
   }, [setRows]);
 
   const [selectedRows, setSelectedRows] = useState([]);
@@ -130,7 +132,7 @@ export default function IssuedTools() {
         </Grid>
         <Grid className={classes.ToolTable} item xs={12}>
           <DataGrid
-            rows={dummyRows}
+            rows={rows}
             rowHeight={25}
             columns={columns}
             checkboxSelection

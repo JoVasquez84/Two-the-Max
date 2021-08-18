@@ -28,14 +28,14 @@ const useStyles = makeStyles((theme) => ({
 
 const columns = [
   {
-    field: 'toolId',
+    field: 'tool_id',
     headerName: 'Tool ID',
     type: 'text',
     minWidth: 150,
     editable: false,
   },
   {
-    field: 'description',
+    field: 'descr',
     headerName: 'Description',
     type: 'text',
     minWidth: 200,
@@ -43,11 +43,12 @@ const columns = [
     editable: false,
   },
   {
-    field: 'location',
-    headerName: 'Location',
+    field: 'checked_out_to',
+    headerName: 'Checked Out To',
     type: 'text',
-    width: 200,
-    editable: false
+    minWidth: 200,
+    flex: 1,
+    editable: false,
   }
 ];
 
@@ -94,16 +95,17 @@ export default function UnissuedTools() {
   const classes = useStyles();
   const [rows, setRows] = useState([]);
   useEffect(() => {
-    fetch('#')
+    fetch('http://localhost:3002/AllTools')
       .then(response => response.json())
       .then(data => setRows(data));
   }, [setRows]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   return (
     <Paper className={classes.UnissuedTools} >
       <Grid container>
         <Grid className={classes.ToolMenu} item xs={12} md={6} >
-          <TextField className={classes.ToolSearchTextField} placeholder='Search by Tool ID'></TextField>
+          <TextField className={classes.ToolSearchTextField} placeholder='Search Tool ID / Name'></TextField>
           <IconButton>
             <SearchIcon />
           </IconButton>
@@ -113,7 +115,7 @@ export default function UnissuedTools() {
         </Grid>
         <Grid className={classes.ToolTable} item xs={12}>
           <DataGrid
-            rows={dummyRows}
+            rows={rows}
             rowHeight={25}
             columns={columns}
             checkboxSelection

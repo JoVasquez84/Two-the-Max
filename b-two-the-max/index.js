@@ -9,8 +9,10 @@ const { parsed: envs } = result;
 const express = require('express');
 const app = express();
 const port = 3002;
-const knex = require('knex')(require('./knexfile.js')[envs.NODE_ENV]);
+const knex = require('knex')(require('./knexfile.js')['development']);
+const cors = require('cors');
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -19,7 +21,7 @@ app.get('/', (req, res) => {
 
 // Get a list of tools in the inventory.
 // SELECT * FROM tools;
-app.get('/enumeratetools', (req, res) => {
+app.get('/UnissuedTools', (req, res) => {
     if (req.query.search) {
         let toolToFind = req.query.search;
         let regex = /[\w\s]+$/; // ^[\w\s]+$
@@ -33,6 +35,7 @@ app.get('/enumeratetools', (req, res) => {
         } else {
             knex.select('*')
                 .from('tools')
+                .whereNull('tools.checked_out_to')
                 .where('descr', 'ILIKE', `%${toolToFind}%`)
                 .orderBy('serv_status', 'desc')
                 .then((data) => {
@@ -54,6 +57,7 @@ app.get('/enumeratetools', (req, res) => {
     else {
         knex.select('*')
             .from('tools')
+            .whereNull('tools.checked_out_to')
             .orderBy('serv_status', 'desc')
             .then((data) => {
                 res.status(200).json(data)
@@ -138,7 +142,7 @@ schema: table.integer('man_number').primary();
             table.string('lname', 256); )
 */
 
-app.post('addpersonnel/:manNumber/:fName/:lName', function (req, res) => {
+app.post('addpersonnel/:manNumber/:fName/:lName', function (req, res){
     if(req.params.manNumber && req.params.fName && req.params.lName) {
     knex('personnel')
         .insert({
@@ -318,14 +322,42 @@ app.patch('/checkintool/:toolId', function (req, res) {
 //Get a list of all the tools are checkedout
 //SELECT * FROM tools where checked_out_to IS NOT FALSE
 
+
 app.get('/IssuedTools', function (req, res) {
-    knex.select('*')
-        .from('tools')
-        .join('personnel', 'tools.checked_out_to', '=', 'personnel.man_number')
-        .whereNotNull('tools.checked_out_to')
-        .then((data) => {
-            res.status(200).json(data)
-        });
+    console.log(typeof req.query.search)
+    console.log()
+
+    if (req.query.search) {
+        const tooltoFind = req.query.search
+        knex.select('*')
+                .from('tools')
+                .whereNotNull('tools.checked_out_to')
+                .join('personnel', 'tools.checked_out_to', '=', 'personnel.man_number')
+                // .where('personnel.lName', 'ILIKE', `%${tooltoFind}%`)
+                .where('checked_out_to', 'ILIKE',`%${tooltoFind}%`)
+                // .where('checked_out_to', parseInt(req.query.search))
+                .then ((data) => {
+                    res.status(200).json(data)
+                })            
+                .catch((err) => {
+                    res.status(404).json({
+                        message: "The data you are looking for could not be found. Please try again",
+                    });
+                });
+    } else {
+        knex.select('*')
+            .from('tools')
+            .whereNotNull('tools.checked_out_to')
+            .join('personnel', 'tools.checked_out_to', '=', 'personnel.man_number')
+            .then ((data) => {
+                res.status(200).json(data)
+            })            
+            .catch((err) => {
+                res.status(404).json({
+                    message: "The data you are looking for could not be found. Please try again",
+                });
+            });
+    }
 })
 
 // Get a list of all the tools checked out to a particular person.
@@ -344,6 +376,16 @@ app.get('/IssuedTools/:manNumber', (req, res) => {
         );
 
 });
+
+app.get('/AllTools', function (req, res) {
+    knex.select('*')
+        .from('tools')
+        .then((data) => {
+            res.status(200).json(data)
+        });
+})
+
+
 
 app.listen(port, () => {
     console.log(`Now listening on port ${port}.`)

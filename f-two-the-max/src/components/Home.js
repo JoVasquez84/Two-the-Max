@@ -1,4 +1,5 @@
 import React from 'react';
+import { ButtonGroup, Button } from '@material-ui/core'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
@@ -13,7 +14,7 @@ import { Route } from 'react-router-dom';
 
 const sections = [
   { title: 'Issued Tools', url: '/IssuedTools/' },
-  { title: 'Unissued Tools', url: '/UnissuedTools/' },
+  { title: 'All Tools', url: '/AllTools/' },
   { title: 'Personnel', url: '/Personnel/' }
 ];
 
@@ -23,6 +24,12 @@ const Home = ({ MainTable }) => {
       <CssBaseline />
       <Container maxWidth="lg">
         <Header title="Two The Max" sections={sections} />
+        <ButtonGroup>
+
+        </ButtonGroup>
+        <Button variant='contained'>Issued Tools</Button>
+        <Button variant='contained'>Unissued Tools</Button>
+        <Button variant='contained'>Personnel</Button>
         <main>
           <MainTable />
           <Grid container spacing={4}>

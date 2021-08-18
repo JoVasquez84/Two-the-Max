@@ -5,9 +5,9 @@ exports.seed = function(knex) {
     .then(function () {
       // Inserts seed entries
       return knex('tools').insert([
-        {id: 1, tool_id: '15AMXSDRILL01', descr: 'Drill', checked_out_to: 05786, serv_status:'2', },
-        {id: 2, tool_id: '15AMXSPPK02', descr: 'Panel Party Kit', checked_out_to: 01573, serv_status:'1', },
-        {id: 3, tool_id: '15AMXSPAD06', descr: 'Dewalt power drill', checked_out_to: 00949, serv_status:'1', }
+        {tool_id: '15AMXSDRILL11', descr: 'Drillbait', checked_out_to: '05786', serv_status:'3', },
+        {tool_id: '15AMXSPPK021', descr: 'Panel Party Kit', checked_out_to:'01573', serv_status:'1', },
+        {tool_id: '15AMXSPAD068', descr: 'Dewalt power drill', checked_out_to: '00949', serv_status:'1', }
       ]);
     });
 };
