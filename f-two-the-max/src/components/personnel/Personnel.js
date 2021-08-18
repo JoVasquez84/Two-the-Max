@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -7,7 +7,6 @@ import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button';
 import { DataGrid } from '@material-ui/data-grid';
-import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   Personnel: {
@@ -106,6 +105,12 @@ const dummyRows = [
 
 export default function Personnel() {
   const classes = useStyles();
+  const [rows, setRows] = useState([]);
+  useEffect(() => {
+    fetch('#')
+      .then(response => response.json())
+      .then(data => setRows(data));
+  }, [setRows]);
 
   return (
     <Paper className={classes.Personnel} >

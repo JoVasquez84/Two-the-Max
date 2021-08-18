@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -75,6 +75,12 @@ const dummyRows = [
 
 export default function Hardware() {
   const classes = useStyles();
+  const [rows, setRows] = useState([]);
+  useEffect(() => {
+    fetch('#')
+      .then(response => response.json())
+      .then(data => setRows(data));
+  }, [setRows]);
 
   return (
     <Grid item xs={12} md={6}>
