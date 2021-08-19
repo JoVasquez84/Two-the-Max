@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
+import Button from '@material-ui/core/Button';
 // import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -30,16 +31,7 @@ export default function Header(props) {
         <Grid container>
           <Grid item md={4}>
             {sections.map((section) => (
-              <Link
-                color="inherit"
-                noWrap
-                key={section.title}
-                variant="body2"
-                href={section.url}
-                className={classes.toolbarLink}
-              >
-                {section.title}
-              </Link>
+              <Button variant='contained' href={section.url}>{section.title}</Button>
             ))}
           </Grid>
           <Grid item md={4}>
@@ -49,8 +41,7 @@ export default function Header(props) {
               color="inherit"
               align="center"
               noWrap
-              className={classes.toolbarTitle}
-            >
+              className={classes.toolbarTitle}>
               {title}
             </Typography>
           </Grid>
