@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import { DataGrid } from '@material-ui/data-grid';
 
 const useStyles = makeStyles((theme) => ({
-  UnissuedTools: {
+  AllTools: {
     position: 'relative',
     backgroundColor: theme.palette.grey[200],
     color: theme.palette.common.white,
@@ -91,7 +91,7 @@ const dummyRows = [
   },
 ];
 
-export default function UnissuedTools() {
+export default function AllTools() {
   const classes = useStyles();
   const [rows, setRows] = useState([]);
   useEffect(() => {
@@ -102,7 +102,7 @@ export default function UnissuedTools() {
   const [selectedRows, setSelectedRows] = useState([]);
 
   return (
-    <Paper className={classes.UnissuedTools} >
+    <Paper className={classes.AllTools} >
       <Grid container>
         <Grid className={classes.ToolMenu} item xs={12} md={6} >
           <TextField className={classes.ToolSearchTextField} placeholder='Search Tool ID / Name'></TextField>
@@ -110,8 +110,18 @@ export default function UnissuedTools() {
             <SearchIcon />
           </IconButton>
           <Button variant='outlined'>Add</Button>
-          <Button variant='outlined'>Edit</Button>
-          <Button variant='outlined'>Checkout</Button>
+          <Button
+            variant='outlined'
+            disabled={selectedRows.length !== 1}
+          >
+            Edit
+          </Button>
+          <Button
+            variant='outlined'
+            disabled={selectedRows.length === 0}
+          >
+            Checkout
+          </Button>
         </Grid>
         <Grid className={classes.ToolTable} item xs={12}>
           <DataGrid

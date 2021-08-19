@@ -83,7 +83,7 @@ export default function Hardware() {
   const classes = useStyles();
   const [rows, setRows] = useState([]);
   const [searchValue, setSearchValue] = useState('');
-  const [finalSearchValue, setFinalSearchValue] =useState('')
+  const [finalSearchValue, setFinalSearchValue] = useState('')
 
   //State for TransferModal
   const [selectedRows, setSelectedRows] = useState([]);
@@ -102,14 +102,14 @@ export default function Hardware() {
   useEffect(() => {
     if (finalSearchValue !== '') {
       fetch(`http://localhost:3002/gethardware?search=${finalSearchValue}`)
-      .then(response =>response.json())
-      .then(data => setRows(data))
+        .then(response => response.json())
+        .then(data => setRows(data))
     } else {
       fetch('http://localhost:3002/gethardware/')
-      .then(response => response.json())
-      .then(data => setRows(data))
+        .then(response => response.json())
+        .then(data => setRows(data))
     }
-  },[finalSearchValue] )
+  }, [finalSearchValue])
 
   const handleOpenAdd = () => {
     setOpenAdd(true);
@@ -126,14 +126,14 @@ export default function Hardware() {
     setAddHwQtyLowThreshold('');
   }
 
-const addHardware = async () => {
-  var promises =[]
+  const addHardware = async () => {
+    var promises = []
 
-  promises.push(new Promise((resolve, reject) => {
-  fetch(`http://localhost:3002/addhardware/${addHwNSN}/${addHwPN}/${addHwDescr}/${addHwLocation}/${addHwMeasure}/${addHwQtyAvailable}/${addHwQtyLowThreshold}`, { method: 'POST' })
-    .then(response => resolve(response))
-  }));
-  Promise.all(promises)
+    promises.push(new Promise((resolve, reject) => {
+      fetch(`http://localhost:3002/addhardware/${addHwNSN}/${addHwPN}/${addHwDescr}/${addHwLocation}/${addHwMeasure}/${addHwQtyAvailable}/${addHwQtyLowThreshold}`, { method: 'POST' })
+        .then(response => resolve(response))
+    }));
+    Promise.all(promises)
       .then((responses) => {
         console.log(responses);
         handleCloseAdd();
@@ -141,8 +141,8 @@ const addHardware = async () => {
           .then(response => response.json())
           .then(data => setRows(data))
       });
-    
-};
+
+  };
 
 
   // const editHardware = async () => {
@@ -176,45 +176,55 @@ const addHardware = async () => {
           <Grid className={classes.HardwareMenu} item xs={12} >
             <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.HardwareSearchTextField} placeholder='Search by NSN or PN'></TextField>
             <IconButton>
-              <SearchIcon onClick= {() => setFinalSearchValue(searchValue)}/>
+              <SearchIcon onClick={() => setFinalSearchValue(searchValue)} />
             </IconButton>
             <Button variant='outlined'
-            onClick={() => handleOpenAdd()}>Add</Button>
-            <Button variant='outlined'>Edit</Button>
-            <Button variant='outlined'>Update</Button>
+              onClick={() => handleOpenAdd()}>Add</Button>
+            <Button
+              variant='outlined'
+              disabled={selectedRows.length !== 1}
+            >
+              Edit
+            </Button>
+            <Button
+              variant='outlined'
+              disabled={selectedRows.length === 0}
+            >
+              Remove
+            </Button>
           </Grid>
           <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          className={classes.Modal}
-          open={openAdd}
-          onClose={handleCloseAdd}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={openAdd}>
-            <div className={classes.ModalPaper}>
-              <h2 id="transition-modal-title">Add HardWare </h2>
-              <TextField onChange={(event) => setAddHwNSN(event.target.value)} value={addHwNSN} placeholder='Enter Hardware NSN'></TextField>
-              <TextField onChange={(event) => setAddHwPN(event.target.value)} value={addHwPN} placeholder='Enter Hardware PN'></TextField>
-              <TextField onChange={(event) => setAddHwDescr(event.target.value)} value={addHwDescr} placeholder='Describe Hardware'></TextField>
-              <TextField onChange={(event) => setAddHwLocation(event.target.value)} value={addHwLocation} placeholder='Enter Hardware Storage Location'></TextField>
-              <TextField onChange={(event) => setAddHwMeasure(event.target.value)} value={addHwMeasure} placeholder='Enter Hardware Unit of Measure'></TextField>
-              <TextField onChange={(event) => setAddHwQtyAvailable(event.target.value)} value={addHwQtyAvailable} placeholder='Enter Hardware Quantity'></TextField>
-              <TextField onChange={(event) => setAddHwQtyLowThreshold(event.target.value)} value={addHwQtyLowThreshold} placeholder='Enter Quantity Low Threshold'></TextField>
-              <Button
-                className={classes.ModalButton}
-                variant='outlined'
-                disabled={addHwNSN === ''}
-                onClick={() => { addHardware() }}
-              >
-                Add New HardWare</Button>
-            </div>
-          </Fade>
-        </Modal>
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.Modal}
+            open={openAdd}
+            onClose={handleCloseAdd}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={openAdd}>
+              <div className={classes.ModalPaper}>
+                <h2 id="transition-modal-title">Add HardWare </h2>
+                <TextField onChange={(event) => setAddHwNSN(event.target.value)} value={addHwNSN} placeholder='Enter Hardware NSN'></TextField>
+                <TextField onChange={(event) => setAddHwPN(event.target.value)} value={addHwPN} placeholder='Enter Hardware PN'></TextField>
+                <TextField onChange={(event) => setAddHwDescr(event.target.value)} value={addHwDescr} placeholder='Describe Hardware'></TextField>
+                <TextField onChange={(event) => setAddHwLocation(event.target.value)} value={addHwLocation} placeholder='Enter Hardware Storage Location'></TextField>
+                <TextField onChange={(event) => setAddHwMeasure(event.target.value)} value={addHwMeasure} placeholder='Enter Hardware Unit of Measure'></TextField>
+                <TextField onChange={(event) => setAddHwQtyAvailable(event.target.value)} value={addHwQtyAvailable} placeholder='Enter Hardware Quantity'></TextField>
+                <TextField onChange={(event) => setAddHwQtyLowThreshold(event.target.value)} value={addHwQtyLowThreshold} placeholder='Enter Quantity Low Threshold'></TextField>
+                <Button
+                  className={classes.ModalButton}
+                  variant='outlined'
+                  disabled={addHwNSN === ''}
+                  onClick={() => { addHardware() }}
+                >
+                  Add New HardWare</Button>
+              </div>
+            </Fade>
+          </Modal>
           <Grid className={classes.HardwareTable} item xs={12}>
             <DataGrid
               rows={rows}
@@ -222,6 +232,8 @@ const addHardware = async () => {
               columns={columns}
               checkboxSelection
               disableSelectionOnClick
+              onSelectionModelChange={newSelectedRows => setSelectedRows(newSelectedRows)}
+              selectionModel={selectedRows}
               disableColumnMenu={true}
             />
           </Grid>
