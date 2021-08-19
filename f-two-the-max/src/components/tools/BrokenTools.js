@@ -49,20 +49,20 @@ export default function BrokenTools() {
   const classes = useStyles();
   const [rows, setRows] = useState([]);
   const [searchValue, setSearchValue] = useState('');
-  const [finalSearchValue, setFinalSearchValue] =useState('')
+  const [finalSearchValue, setFinalSearchValue] = useState('')
 
 
   useEffect(() => {
     if (finalSearchValue !== '') {
       fetch(`http://localhost:3002/AllToolsByStatus?search=${finalSearchValue}`)
-      .then(response =>response.json())
-      .then(data => setRows(data))
+        .then(response => response.json())
+        .then(data => setRows(data))
     } else {
       fetch('http://localhost:3002/AllToolsByStatus')
-      .then(response => response.json())
-      .then(data => setRows(data))
+        .then(response => response.json())
+        .then(data => setRows(data))
     }
-  },[finalSearchValue] )
+  }, [finalSearchValue])
 
   return (
     <Grid item xs={12} md={6}>
@@ -71,17 +71,14 @@ export default function BrokenTools() {
           <Grid className={classes.ToolMenu} item xs={12}>
             <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.ToolSearchTextField} placeholder='Search by Tool ID'></TextField>
             <IconButton>
-              <SearchIcon onClick= {() => setFinalSearchValue(searchValue)}/>
+              <SearchIcon onClick={() => setFinalSearchValue(searchValue)} />
             </IconButton>
-            <Button variant='outlined'>Inspection</Button>
           </Grid>
           <Grid className={classes.ToolTable} item xs={12}>
             <DataGrid
               rows={rows}
               rowHeight={25}
               columns={columns}
-              checkboxSelection
-              disableSelectionOnClick
               disableColumnMenu={true}
             />
           </Grid>

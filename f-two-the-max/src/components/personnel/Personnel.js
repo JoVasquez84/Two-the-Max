@@ -136,7 +136,10 @@ export default function Personnel() {
             onClick={() => handleOpenEdit()}>Edit</Button>
           <Button
             variant='outlined'
-            disabled={selectedRows.length === 0}>Remove</Button>
+            disabled={selectedRows.length === 0}
+          >
+            Remove
+          </Button>
         </Grid>
         <Modal
           aria-labelledby="transition-modal-title"
@@ -173,6 +176,8 @@ export default function Personnel() {
             columns={columns}
             checkboxSelection
             disableSelectionOnClick
+            onSelectionModelChange={newSelectedRows => setSelectedRows(newSelectedRows)}
+            selectionModel={selectedRows}
             disableColumnMenu={true}
           />
         </Grid>

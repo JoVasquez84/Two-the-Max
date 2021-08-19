@@ -1,16 +1,11 @@
 import React from 'react';
-import { ButtonGroup, Button } from '@material-ui/core'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Header from './Header';
-import BrokenTools from './brokenTools/BrokenTools';
+import BrokenTools from './tools/BrokenTools';
 import Hardware from './hardware/Hardware';
-import IssuedTools from './tools/IssuedTools';
-import UnissuedTools from './tools/UnissuedTools';
-import Personnel from './personnel/Personnel';
 import Footer from './Footer';
-import { Route } from 'react-router-dom';
 
 const sections = [
   { title: 'Issued Tools', url: '/IssuedTools/' },
