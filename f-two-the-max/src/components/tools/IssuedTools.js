@@ -90,7 +90,6 @@ export default function IssuedTools() {
   const [open, setOpen] = useState(false);
   const [transferManNumberTarget, setTransferManNumberTarget] = useState('')
 
-
   useEffect(() => {
     if (finalSearchValue !== '') {
       fetch(`http://localhost:3002/IssuedTools?search=${finalSearchValue}`)
@@ -123,12 +122,10 @@ export default function IssuedTools() {
         fetch(`http://localhost:3002/checkouttool/${row.tool_id}/${transferManNumberTarget}`, { method: 'PATCH' })
           .then(response => resolve(response));
       }));
-
     }
 
     Promise.all(promises)
       .then((responses) => {
-        console.log(responses);
         handleClose();
         fetch('http://localhost:3002/IssuedTools/')
           .then(response => response.json())

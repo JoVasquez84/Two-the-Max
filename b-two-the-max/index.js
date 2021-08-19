@@ -106,7 +106,7 @@ app.get('/gettool/:toolid', (req, res) => {
 app.get('/getpersonnel', (req, res) => {
     if (req.query.search) {
         let personToFind = req.query.search;
-        let regex = /[\w\s]+$/; 
+        let regex = /[\w\s]+$/;
         let matches = personToFind.match(regex);
         console.log("the regex results", matches);
         if (!matches) {
@@ -115,7 +115,7 @@ app.get('/getpersonnel', (req, res) => {
                 message: "Invalid person name supplied",
             })
         } else {
-            knex.select([{id: 'man_number'}, 'fname','lname', 'man_number'])
+            knex.select([{ id: 'man_number' }, 'fname', 'lname', 'man_number'])
                 .from('personnel')
                 .where('fname', 'ILIKE', `%${personToFind}%`)
                 .orWhere('lname', 'ILIKE', `%${personToFind}%`)
@@ -136,7 +136,7 @@ app.get('/getpersonnel', (req, res) => {
                 });
         }
     } else {
-        knex.select([{id: 'man_number'}, 'fname','lname', 'man_number'])
+        knex.select([{ id: 'man_number' }, 'fname', 'lname', 'man_number'])
             .from('personnel')
             .then((data) => {
                 res.status(200).json(data)
@@ -157,7 +157,8 @@ schema: table.integer('man_number').primary();
             table.string('lname', 256); )
 */
 
-app.post('addpersonnel/:manNumber/:fName/:lName', function (req, res) {
+app.post('/addpersonnel/:manNumber/:fName/:lName', function (req, res) {
+    console.log('here')
     if (req.params.manNumber && req.params.fName && req.params.lName) {
         knex('personnel')
             .insert({
@@ -406,12 +407,12 @@ app.get('/AllTools', function (req, res) {
             res.status(200).json(data)
         });
 })
-//get service status and tool id from tools table to populate broken tools section 
+//get service status and tool id from tools table to populate broken tools section
 
 app.get('/AllToolsByStatus', function (req, res) {
     if (req.query.search) {
         let brokenToolToFind = req.query.search;
-        let regex = /[\w\s]+$/; 
+        let regex = /[\w\s]+$/;
         let matches = brokenToolToFind.match(regex);
         console.log(brokenToolToFind)
         console.log("the regex results", matches);
@@ -421,7 +422,7 @@ app.get('/AllToolsByStatus', function (req, res) {
                 message: "Invalid tool name supplied",
             })
         } else {
-            knex.select(['id','tool_id','serv_status'])
+            knex.select(['id', 'tool_id', 'serv_status'])
                 .from('tools')
                 .where('tool_id', 'ILIKE', `%${brokenToolToFind}%`)
                 .orderBy('serv_status', 'desc')
@@ -441,17 +442,17 @@ app.get('/AllToolsByStatus', function (req, res) {
                 });
         }
     } else {
-        knex.select(['id','tool_id','serv_status'])
-        .from('tools')
-        .orderBy('serv_status','desc')
-        .then((data) => {
-            res.status(200).json(data)
-        });
+        knex.select(['id', 'tool_id', 'serv_status'])
+            .from('tools')
+            .orderBy('serv_status', 'desc')
+            .then((data) => {
+                res.status(200).json(data)
+            });
     }
 })
 
 
-//get specific tools from tool table for the broken tools search function 
+//get specific tools from tool table for the broken tools search function
 
 app.listen(port, () => {
     console.log(`Now listening on port ${port}.`)
