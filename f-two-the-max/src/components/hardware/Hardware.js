@@ -29,19 +29,28 @@ const useStyles = makeStyles((theme) => ({
 
 const columns = [
   {
-    field: 'hardwareId',
-    headerName: 'NSN / Part#',
+    field: 'nsn',
+    headerName: 'NSN',
     type: 'text',
     flex: 1,
     minWidth: 120,
     editable: false,
   },
   {
-    field: 'qty',
+    field: 'pn',
+    headerName: 'PN',
+    type: 'text',
+    flex: 1,
+    minWidth: 120,
+    editable: false,
+  },
+  {
+    field: 'qty_available',
     headerName: 'Qty',
     type: 'text',
-    width: 60,
-    editable: true
+    flex: 1,
+    minWidth: 120,
+    editable: false,
   },
   {
     field: 'location',
@@ -52,44 +61,35 @@ const columns = [
   }
 ];
 
-const dummyRows = [
-  {
-    id: 1,
-    hardwareId: 'nut-01',
-    qty: 2,
-    location: '100'
-  },
-  {
-    id: 2,
-    hardwareId: 'nut-01',
-    qty: 2,
-    location: '100'
-  },
-  {
-    id: 3,
-    hardwareId: 'nut-01',
-    qty: 2,
-    location: '100'
-  }
-];
 
 export default function Hardware() {
   const classes = useStyles();
   const [rows, setRows] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [finalSearchValue, setFinalSearchValue] =useState('')
+
+
   useEffect(() => {
-    fetch('#')
+    if (finalSearchValue !== '') {
+      fetch(`http://localhost:3002/gethardware?search=${finalSearchValue}`)
+      .then(response =>response.json())
+      .then(data => setRows(data))
+    } else {
+      fetch('http://localhost:3002/gethardware/')
       .then(response => response.json())
-      .then(data => setRows(data));
-  }, [setRows]);
+      .then(data => setRows(data))
+    }
+  },[finalSearchValue] )
+
 
   return (
     <Grid item xs={12} md={6}>
       <Paper className={classes.Hardware} >
         <Grid container>
           <Grid className={classes.HardwareMenu} item xs={12} >
-            <TextField className={classes.HardwareSearchTextField} placeholder='Search by NSN or Name'></TextField>
+            <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.HardwareSearchTextField} placeholder='Search by NSN or PN'></TextField>
             <IconButton>
-              <SearchIcon />
+              <SearchIcon onClick= {() => setFinalSearchValue(searchValue)}/>
             </IconButton>
             <Button variant='outlined'>Add</Button>
             <Button variant='outlined'>Edit</Button>
@@ -97,7 +97,7 @@ export default function Hardware() {
           </Grid>
           <Grid className={classes.HardwareTable} item xs={12}>
             <DataGrid
-              rows={dummyRows}
+              rows={rows}
               rowHeight={25}
               columns={columns}
               checkboxSelection

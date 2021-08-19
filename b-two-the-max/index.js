@@ -164,47 +164,57 @@ app.post('addpersonnel/:manNumber/:fName/:lName', function (req, res){
 //Get all hardware with ability to query by nsn or pn if they are provided as query parameters
 //SELECT * FROM hardware WHERE nsn = ":nsn"
 app.get('/gethardware', function (req, res) {
-    if (req.query.nsn) {
-        knex.select('*')
-            .from('hardware')
-            .where({ nsn: req.query.nsn })
-            .then((data) => {
-                if (data.length === 1) {
-                    res.status(200).json(data[0])
-                }
-                else if (data.length === 0) {
-                    res.status(404).json({
-                        message: "Tool Id not found."
-                    })
-                }
+    if (req.query.search) {
+        let hw1ToFind = req.query.search;
+        let regex = /[\w\s]+$/; // ^[\w\s]+$
+        let matches = hw1ToFind.match(regex);
+        console.log("the regex results", matches);
+        if (!matches) {
+            console.log('invalid search');
+            res.status(400).json({
+                message: "Invalid tool name supplied",
             })
-            .catch((err) =>
-                res.status(404).json({
-                    message: "The data you are looking for could not be found. Please try again",
+        } else {
+            if (isNaN(parseInt(hw1ToFind))) {
+                knex.select([{id: 'nsn'},'nsn','pn','location','qty_available'])
+                .from('hardware')
+                .where('pn','ILIKE',`%${hw1ToFind}%`)
+                .then((data) => {
+                    if (data.length === 0) {
+                        res.status(404).json({
+                            message: "The data you are looking for could not be found. Please try again with another input.",
+                        });
+                    } else {
+                        res.status(200).json(data)
+                    }
                 })
-            );
-    } else if (req.query.pn) {
-        knex.select('*')
-            .from('hardware')
-            .where({ pn: req.query.pn })
-            .then((data) => {
-                if (data.length === 1) {
-                    res.status(200).json(data[0])
-                }
-                else if (data.length === 0) {
+                .catch((err) => {
                     res.status(404).json({
-                        message: "Tool Id not found."
+                        message: "The data you are looking for could not be found. Please try again",
+                    });
+                });   
+            } else {
+                knex.select([{id: 'nsn'},'nsn','pn','location','qty_available'])
+                    .from('hardware')
+                    .where('nsn', parseInt(hw1ToFind))
+                    .then((data) => {
+                        if (data.length === 0) {
+                            res.status(404).json({
+                                message: "The data you are looking for could not be found. Please try again with another input.",
+                            });
+                        } else {
+                            res.status(200).json(data)
+                        }
                     })
-                }
-            })
-            .catch((err) =>
-                res.status(404).json({
-                    message: "The data you are looking for could not be found. Please try again",
-                })
-            );
-
+                    .catch((err) => {
+                        res.status(404).json({
+                            message: "The data you are looking for could not be found. Please try again",
+                        });
+                    });
+            }
+        }
     } else {
-        knex.select('*')
+        knex.select([{id: 'nsn'},'nsn','pn','location','qty_available'])
             .from('hardware')
             .then((data) => {
                 res.status(200).json(data)
@@ -333,9 +343,8 @@ app.get('/IssuedTools', function (req, res) {
                 .from('tools')
                 .whereNotNull('tools.checked_out_to')
                 .join('personnel', 'tools.checked_out_to', '=', 'personnel.man_number')
-                // .where('personnel.lName', 'ILIKE', `%${tooltoFind}%`)
-                .where('checked_out_to', 'ILIKE',`%${tooltoFind}%`)
-                // .where('checked_out_to', parseInt(req.query.search))
+                .where('lname', 'ILIKE', `%${tooltoFind}%`)
+                .orWhere('checked_out_to', 'ILIKE',`%${tooltoFind}%`)
                 .then ((data) => {
                     res.status(200).json(data)
                 })            

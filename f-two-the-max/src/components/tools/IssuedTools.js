@@ -59,70 +59,34 @@ const columns = [
   }
 ];
 
-const dummyRows = [
-  {
-    id: 1,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    toolId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 2,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    toolId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 3,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    toolId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 4,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    toolId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 5,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    toolId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 6,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    toolId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-];
-
 export default function IssuedTools() {
   const classes = useStyles();
   const [rows, setRows] = useState([]);
-  useEffect(() => {
-    fetch('http://localhost:3002/IssuedTools/')
-      .then(response => response.json())
-      .then(data => setRows(data))
-      .then(data => console.log(rows))
-  }, [setRows]);
 
   const [selectedRows, setSelectedRows] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [finalSearchValue, setFinalSearchValue] =useState('')
+
+  
+  useEffect(() => {
+    if (finalSearchValue !== '') {
+      fetch(`http://localhost:3002/IssuedTools?search=${finalSearchValue}`)
+      .then(response =>response.json())
+      .then(data => setRows(data))
+    } else {
+      fetch('http://localhost:3002/IssuedTools/')
+      .then(response => response.json())
+      .then(data => setRows(data))
+    }
+  },[finalSearchValue] )
 
   return (
     <Paper className={classes.IssuedTools} >
       <Grid container>
         <Grid className={classes.ToolMenu} item xs={12} md={6} >
-          <TextField className={classes.ToolSearchTextField} placeholder='Search by Man# or Name'></TextField>
+          <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} id = 'issuedToolsTextField' className={classes.ToolSearchTextField} placeholder='Search by Man# or Name'></TextField>
           <IconButton>
-            <SearchIcon />
+            <SearchIcon onClick={() => setFinalSearchValue(searchValue)}/>
           </IconButton>
           <Button
             variant='outlined'
