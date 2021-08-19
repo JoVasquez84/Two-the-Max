@@ -28,105 +28,79 @@ const useStyles = makeStyles((theme) => ({
 
 const columns = [
   {
-    field: 'PersonnelId',
-    headerName: 'Personnel ID',
+    field: 'fname',
+    headerName: 'First Name',
     type: 'text',
     minWidth: 150,
     editable: false,
   },
   {
-    field: 'description',
-    headerName: 'Description',
+    field: 'lname',
+    headerName: 'Last Name',
     type: 'text',
-    minWidth: 200,
-    flex: 1,
-    editable: false,
-  },
-  {
-    field: 'manNumber',
-    headerName: 'MAN#',
-    type: 'text',
-    width: 75,
+    width: 150,
     editable: false
   },
   {
-    field: 'issuedTo',
-    headerName: 'Issued To',
+    field: 'man_number',
+    headerName: 'Man Number',
     type: 'text',
-    minWidth: 200,
+    minWidth: 150,
     editable: false,
   }
-];
-
-const dummyRows = [
-  {
-    id: 1,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    PersonnelId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 2,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    PersonnelId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 3,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    PersonnelId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 4,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    PersonnelId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 5,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    PersonnelId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
-  {
-    id: 6,
-    manNumber: 12345,
-    issuedTo: 'Random Joe',
-    PersonnelId: 'DRILSM-01',
-    description: 'Small Drill'
-  },
 ];
 
 export default function Personnel() {
   const classes = useStyles();
   const [rows, setRows] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [finalSearchValue, setFinalSearchValue] =useState('')
+  // const [Add, setAdd] = useState(1)
+  
+  // const newPersonnelAdd = () => {
+  //   setAdd(add + 1);
+  // };
+
   useEffect(() => {
-    fetch('#')
+    if (finalSearchValue !== '') {
+      fetch(`http://localhost:3002/getpersonnel?search=${finalSearchValue}`)
+      .then(response =>response.json())
+      .then(data => setRows(data))
+    } else {
+      fetch('http://localhost:3002/getpersonnel/')
       .then(response => response.json())
-      .then(data => setRows(data));
-  }, [setRows]);
+      .then(data => setRows(data))
+    }
+  },[finalSearchValue] )
+
+
+
+// useEffect(() => {
+//   const options = {
+//     method: `POST`
+//   }
+//   fetch(`http://localhost:3002/addpersonnel/${addManNumber}/${addFName}/${addLName}`,options)
+//   .then(response =>response.json())
+//   .then(data => setRows(data)) 
+// }, [add])
+
+
 
   return (
     <Paper className={classes.Personnel} >
       <Grid container>
         <Grid className={classes.PersonnelMenu} item xs={12} md={6} >
-          <TextField className={classes.PersonnelSearchTextField} placeholder='Search by Man# or Name'></TextField>
+          <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.PersonnelSearchTextField} placeholder='Search by Man# or Name'></TextField>
           <IconButton>
-            <SearchIcon />
+            <SearchIcon onClick= {() => setFinalSearchValue(searchValue)}/>
           </IconButton>
-          <Button variant='outlined'>Add</Button>
+          <Button  variant='outlined'>Add</Button>
           <Button variant='outlined'>Edit</Button>
           <Button variant='outlined'>Remove</Button>
         </Grid>
         <Grid className={classes.PersonnelTable} item xs={12}>
           <DataGrid
-            rows={dummyRows}
+            rows={rows}
             rowHeight={25}
             columns={columns}
             checkboxSelection

@@ -96,44 +96,52 @@ app.get('/gettool/:toolid', (req, res) => {
 
 // Get a list of personnel.
 // SELECT * FROM personnel;
-app.get('/enumeratepersonnel', (req, res) => {
-    knex.select('*')
-        .from('personnel')
-        .then((data) => {
-            res.status(200).json(data)
-        })
-        .catch((err) =>
-            res.status(404).json({
-                message: "The data you are looking for could not be found. Please try again",
+app.get('/getpersonnel', (req, res) => {
+    if (req.query.search) {
+        let personToFind = req.query.search;
+        let regex = /[\w\s]+$/; 
+        let matches = personToFind.match(regex);
+        console.log("the regex results", matches);
+        if (!matches) {
+            console.log('invalid search');
+            res.status(400).json({
+                message: "Invalid person name supplied",
             })
-        );
-
-});
-
-// Get a specific person by man number.
-// SELECT * FROM personnel WHERE man_number=":manNumber";
-app.get('/getpersonnel/:manNumber', (req, res) => {
-    knex.select('*')
-        .from('personnel')
-        .where({ man_number: req.params.manNumber })
-        .returning('*')
-        .then((data) => {
-            if (data.length === 1) {
-                res.status(200).json(data[0])
-            }
-            else if (data.length === 0) {
-                res.status(404).json({
-                    message: "Personnel Man Number not found."
+        } else {
+            knex.select([{id: 'man_number'}, 'fname','lname', 'man_number'])
+                .from('personnel')
+                .where('fname', 'ILIKE', `%${personToFind}%`)
+                .orWhere('lname', 'ILIKE', `%${personToFind}%`)
+                .orWhere('man_number', 'ILIKE', `%${personToFind}%`)
+                .then((data) => {
+                    if (data.length === 0) {
+                        res.status(404).json({
+                            message: "The data you are looking for could not be found. Please try again",
+                        });
+                    } else {
+                        res.status(200).json(data)
+                    }
                 })
-            }
-        })
-        .catch((err) =>
-            res.status(404).json({
-                message: "The data you are looking for could not be found. Please try again",
+                .catch((err) => {
+                    res.status(404).json({
+                        message: "The data you are looking for could not be found. Please try again",
+                    });
+                });
+        }
+    } else {
+        knex.select([{id: 'man_number'}, 'fname','lname', 'man_number'])
+            .from('personnel')
+            .then((data) => {
+                res.status(200).json(data)
             })
-        );
-
+            .catch((err) =>
+                res.status(404).json({
+                    message: "The data you are looking for could not be found. Please try again",
+                })
+            );
+    }
 });
+
 
 //add in a new person with first name, last name, man number
 /*insert into personnel values ( man_number, fname, lname)
