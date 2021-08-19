@@ -25,11 +25,10 @@ const Home = ({ MainTable }) => {
       <Container maxWidth="lg">
         <Header title="Two The Max" sections={sections} />
         <ButtonGroup>
-
+          <Button variant='contained' href='/IssuedTools/'>Issued Tools</Button>
+          <Button variant='contained' href='/AllTools/'>All Tools</Button>
+          <Button variant='contained' href='/Personnel/'>Personnel</Button>
         </ButtonGroup>
-        <Button variant='contained'>Issued Tools</Button>
-        <Button variant='contained'>Unissued Tools</Button>
-        <Button variant='contained'>Personnel</Button>
         <main>
           <MainTable />
           <Grid container spacing={4}>

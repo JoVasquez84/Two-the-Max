@@ -28,57 +28,56 @@ const useStyles = makeStyles((theme) => ({
 
 const columns = [
   {
-    field: 'toolId',
+    field: 'tool_id',
     headerName: 'Tool ID',
     type: 'text',
     minWidth: 150,
     editable: false,
   },
   {
-    field: 'servicable',
+    field: 'serv_status',
     headerName: 'Servicable',
-    type: 'boolean',
+    type: 'number',
     minWidth: 125,
     editable: false,
   }
 ];
 
-const dummyRows = [
-  {
-    id: 1,
-    toolId: 'DRILSM-01',
-    servicable: true
-  },
-  {
-    id: 2,
-    toolId: 'DRILSM-01',
-    servicable: false
-  },
-];
+
 
 export default function BrokenTools() {
   const classes = useStyles();
   const [rows, setRows] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [finalSearchValue, setFinalSearchValue] =useState('')
+
+
   useEffect(() => {
-    fetch('#')
+    if (finalSearchValue !== '') {
+      fetch(`http://localhost:3002/AllToolsByStatus?search=${finalSearchValue}`)
+      .then(response =>response.json())
+      .then(data => setRows(data))
+    } else {
+      fetch('http://localhost:3002/AllToolsByStatus')
       .then(response => response.json())
-      .then(data => setRows(data));
-  }, [setRows]);
+      .then(data => setRows(data))
+    }
+  },[finalSearchValue] )
 
   return (
     <Grid item xs={12} md={6}>
       <Paper className={classes.BrokenTools} >
         <Grid container>
           <Grid className={classes.ToolMenu} item xs={12}>
-            <TextField className={classes.ToolSearchTextField} placeholder='Search by Tool ID'></TextField>
+            <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.ToolSearchTextField} placeholder='Search by Tool ID'></TextField>
             <IconButton>
-              <SearchIcon />
+              <SearchIcon onClick= {() => setFinalSearchValue(searchValue)}/>
             </IconButton>
             <Button variant='outlined'>Inspection</Button>
           </Grid>
           <Grid className={classes.ToolTable} item xs={12}>
             <DataGrid
-              rows={dummyRows}
+              rows={rows}
               rowHeight={25}
               columns={columns}
               checkboxSelection
