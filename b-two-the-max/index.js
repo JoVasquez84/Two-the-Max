@@ -12,7 +12,14 @@ const port = 3002;
 const knex = require('knex')(require('./knexfile.js')['development']);
 const cors = require('cors');
 
-app.use(cors());
+var options = {
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
+}
+app.use(cors(options))
+// app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -142,21 +149,21 @@ schema: table.integer('man_number').primary();
             table.string('lname', 256); )
 */
 
-app.post('addpersonnel/:manNumber/:fName/:lName', function (req, res){
-    if(req.params.manNumber && req.params.fName && req.params.lName) {
-    knex('personnel')
-        .insert({
-            man_number: req.params.manNumber,
-            fname: req.params.fName,
-            lname: req.params.lName
-        })
-        .returning('*')
-        .then((data) => res.status(200).json(data))
-        .catch((err) => {
-            res.status(500).json({ message: "Could not update the database." });
-        });
+app.post('addpersonnel/:manNumber/:fName/:lName', function (req, res) {
+    if (req.params.manNumber && req.params.fName && req.params.lName) {
+        knex('personnel')
+            .insert({
+                man_number: req.params.manNumber,
+                fname: req.params.fName,
+                lname: req.params.lName
+            })
+            .returning('*')
+            .then((data) => res.status(200).json(data))
+            .catch((err) => {
+                res.status(500).json({ message: "Could not update the database." });
+            });
+    }
 }
- }
 )
 
 
@@ -176,25 +183,25 @@ app.get('/gethardware', function (req, res) {
             })
         } else {
             if (isNaN(parseInt(hw1ToFind))) {
-                knex.select([{id: 'nsn'},'nsn','pn','location','qty_available'])
-                .from('hardware')
-                .where('pn','ILIKE',`%${hw1ToFind}%`)
-                .then((data) => {
-                    if (data.length === 0) {
+                knex.select([{ id: 'nsn' }, 'nsn', 'pn', 'location', 'qty_available'])
+                    .from('hardware')
+                    .where('pn', 'ILIKE', `%${hw1ToFind}%`)
+                    .then((data) => {
+                        if (data.length === 0) {
+                            res.status(404).json({
+                                message: "The data you are looking for could not be found. Please try again with another input.",
+                            });
+                        } else {
+                            res.status(200).json(data)
+                        }
+                    })
+                    .catch((err) => {
                         res.status(404).json({
-                            message: "The data you are looking for could not be found. Please try again with another input.",
+                            message: "The data you are looking for could not be found. Please try again",
                         });
-                    } else {
-                        res.status(200).json(data)
-                    }
-                })
-                .catch((err) => {
-                    res.status(404).json({
-                        message: "The data you are looking for could not be found. Please try again",
                     });
-                });   
             } else {
-                knex.select([{id: 'nsn'},'nsn','pn','location','qty_available'])
+                knex.select([{ id: 'nsn' }, 'nsn', 'pn', 'location', 'qty_available'])
                     .from('hardware')
                     .where('nsn', parseInt(hw1ToFind))
                     .then((data) => {
@@ -214,7 +221,7 @@ app.get('/gethardware', function (req, res) {
             }
         }
     } else {
-        knex.select([{id: 'nsn'},'nsn','pn','location','qty_available'])
+        knex.select([{ id: 'nsn' }, 'nsn', 'pn', 'location', 'qty_available'])
             .from('hardware')
             .then((data) => {
                 res.status(200).json(data)
@@ -271,6 +278,7 @@ app.post('/addhardware/:nsn/:pn/:descr/:location/:unit_of_measure/:qty_available
 
 app.patch('/checkouttool/:toolId/:manNumber', function (req, res) {
     let result;
+    console.log('here')
     if (req.params.toolId && req.params.manNumber) {
         knex('tools')
             .where({ tool_id: req.params.toolId })
@@ -334,33 +342,30 @@ app.patch('/checkintool/:toolId', function (req, res) {
 
 
 app.get('/IssuedTools', function (req, res) {
-    console.log(typeof req.query.search)
-    console.log()
-
     if (req.query.search) {
         const tooltoFind = req.query.search
         knex.select('*')
-                .from('tools')
-                .whereNotNull('tools.checked_out_to')
-                .join('personnel', 'tools.checked_out_to', '=', 'personnel.man_number')
-                .where('lname', 'ILIKE', `%${tooltoFind}%`)
-                .orWhere('checked_out_to', 'ILIKE',`%${tooltoFind}%`)
-                .then ((data) => {
-                    res.status(200).json(data)
-                })            
-                .catch((err) => {
-                    res.status(404).json({
-                        message: "The data you are looking for could not be found. Please try again",
-                    });
+            .from('tools')
+            .whereNotNull('tools.checked_out_to')
+            .join('personnel', 'tools.checked_out_to', '=', 'personnel.man_number')
+            .where('lname', 'ILIKE', `%${tooltoFind}%`)
+            .orWhere('checked_out_to', 'ILIKE', `%${tooltoFind}%`)
+            .then((data) => {
+                res.status(200).json(data)
+            })
+            .catch((err) => {
+                res.status(404).json({
+                    message: "The data you are looking for could not be found. Please try again",
                 });
+            });
     } else {
         knex.select('*')
             .from('tools')
             .whereNotNull('tools.checked_out_to')
             .join('personnel', 'tools.checked_out_to', '=', 'personnel.man_number')
-            .then ((data) => {
+            .then((data) => {
                 res.status(200).json(data)
-            })            
+            })
             .catch((err) => {
                 res.status(404).json({
                     message: "The data you are looking for could not be found. Please try again",
