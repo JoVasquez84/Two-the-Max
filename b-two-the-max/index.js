@@ -173,6 +173,53 @@ app.post('/addpersonnel/:manNumber/:fName/:lName', function (req, res) {
     }
 })
 
+//Edit Personnel data from the database
+app.patch('/editPersonnel/:oldManNumber/', function (req, res) {
+    let oldManNumber = req.params.oldManNumber;
+    let newManNumber = req.query.new_man_number;
+    let firstName = req.query.fName;
+    let lastName = req.query.lName;
+    let editPersonnel = {};
+    if (newManNumber !== undefined) {
+        editPersonnel.man_number = newManNumber
+    }
+    if (firstName !== undefined) {
+        editPersonnel.fname = firstName === '' ? null : firstName
+    }
+    if (lastName !== undefined) {
+        editPersonnel.lname = lastName === '' ? null : lastName
+    }
+
+    console.log('editTool: ', editPersonnel)
+    if (oldManNumber) {
+        knex('personnel')
+            .where({ man_number: oldManNumber })
+            .update(editPersonnel)
+            .returning('*')
+            .then((data) => res.status(200).json(data))
+            .catch((err) => {
+                res.status(500).json({ message: "Could not update the database." });
+            });
+    }
+})
+
+
+//Delete a person from the database;
+app.delete('/deletepersonnel/:manNum', function (req,res) {
+    if (req.params.manNum) {
+        
+        knex('personnel')
+        .where({man_number : req.params.manNum})
+        .del()
+        .then((data) => {
+            res.status.status(200).json(data)
+        })
+        .catch((err) => {
+            res.status(500).json({ message: "Could not update the database." });
+        });
+    }
+})
+
 
 
 //Get all hardware with ability to query by nsn or pn if they are provided as query parameters
