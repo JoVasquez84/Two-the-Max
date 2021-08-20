@@ -11,6 +11,8 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 
+
+const SET_TO_EMPTY = 'Empty'
 const useStyles = makeStyles((theme) => ({
   Hardware: {
     position: 'relative',
@@ -75,6 +77,13 @@ const columns = [
     type: 'text',
     minWidth: 75,
     editable: false,
+  },
+  {
+    field: 'descr',
+    headerName: 'Description',
+    type: 'text',
+    minWidth: 75,
+    editable: false,
   }
 ];
 
@@ -90,6 +99,8 @@ export default function Hardware() {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+
+  // HW states for add modal 
   const [addHwNSN, setAddHwNSN] = useState('');
   const [addHwPN, setAddHwPN] = useState('');
   const [addHwDescr, setAddHwDescr] = useState('');
@@ -98,20 +109,12 @@ export default function Hardware() {
   const [addHwQtyAvailable, setAddHwQtyAvailable] = useState('');
   const [addHwQtyLowThreshold, setAddHwQtyLowThreshold] = useState('');
 
-
-  useEffect(() => {
-    if (finalSearchValue !== '') {
-      fetch(`http://localhost:3002/gethardware?search=${finalSearchValue}`)
-        .then(response => response.json())
-        .then(data => setRows(data))
-    } else {
-      fetch('http://localhost:3002/gethardware/')
-        .then(response => response.json())
-        .then(data => {
-          setRows(data)
-        })
-    }
-  }, [finalSearchValue])
+  // HW states for edit modal
+  const [oldHwNsn, setOldHwNsn] = useState('');
+  const [editHwNsn, setEditHwNsn] = useState('');
+  
+  //HW states for removal modal
+  const [deleteHwNsn, setDeleteHwNsn] = useState('')
 
   const handleOpenAdd = () => {
     setOpenAdd(true);
@@ -128,8 +131,66 @@ export default function Hardware() {
     setAddHwQtyLowThreshold('');
   }
 
+  const handleOpenDelete = () => {
+    setOpenDelete(true);
+    for (let row of rows) {
+      if (!selectedRows.includes(row.id)) {
+        continue;
+      }
+      setDeleteHwNsn(row.nsn);
+    }
+  }
+
+const handleCloseDelete = () => {
+  setOpenDelete(false);
+  setDeleteHwNsn('')
+}
+
+const handleOpenEdit = () => {
+  setOpenEdit(true)
+  for (let row of rows) {
+    if (!selectedRows.includes(row.id)) {
+      continue;
+    }
+    setEditHwNsn(row.nsn);
+    setOldHwNsn(row.nsn);
+    setAddHwPN(row.pn);
+    setAddHwDescr(row.descr);
+    setAddHwLocation(row.location);
+    setAddHwMeasure(row.unit_of_measure);
+    setAddHwQtyAvailable(row.qty_available)
+    setAddHwQtyLowThreshold(row.qty_low_threshold)
+  }
+}
+
+const handleCloseEdit = () => {
+  setOpenEdit(false);
+  setEditHwNsn('');
+  setAddHwPN('');
+    setAddHwDescr('');
+    setAddHwLocation('');
+    setAddHwMeasure('');
+    setAddHwQtyAvailable('')
+    setAddHwQtyLowThreshold('')
+}
+
+
+  useEffect(() => {
+    if (finalSearchValue !== '') {
+      fetch(`http://localhost:3002/gethardware?search=${finalSearchValue}`)
+        .then(response => response.json())
+        .then(data => setRows(data))
+    } else {
+      fetch('http://localhost:3002/gethardware/')
+        .then(response => response.json())
+        .then(data => {
+          setRows(data)
+        })
+    }
+  }, [finalSearchValue])
+
   const addHardware = async () => {
-    var promises = []
+    let promises = []
 
     promises.push(new Promise((resolve, reject) => {
       fetch(`http://localhost:3002/addhardware/${addHwNSN}/${addHwPN}/${addHwDescr}/${addHwLocation}/${addHwMeasure}/${addHwQtyAvailable}/${addHwQtyLowThreshold}`, { method: 'POST' })
@@ -137,7 +198,6 @@ export default function Hardware() {
     }));
     Promise.all(promises)
       .then((responses) => {
-        console.log(responses);
         handleCloseAdd();
         fetch('http://localhost:3002/gethardware/')
           .then(response => response.json())
@@ -146,30 +206,56 @@ export default function Hardware() {
 
   };
 
+  const deleteHardware = async () => {
+    let promises = [];
 
-  // const editHardware = async () => {
-  //   var promises = [];
+    for (let row of rows) {
+      if (!selectedRows.includes(row.id)) {
+        continue;
+      }
+      promises.push(new Promise((resolve, reject) => {
+        fetch(`http://localhost:3002/deletehardware/${row.nsn}`, { method: 'DELETE' })
+          .then(response => resolve(response));
+      }));
+    }
 
-  //   for (let row of rows) {
-  //     if (!selectedRows.includes(row.id)) {
-  //       continue;
-  //     }
-  //     promises.push(new Promise((resolve, reject) => {
-  //       fetch(`/edithardware/${addHwNSN}/${addHwNSN}/${addHwNSN}/${addHwNSN}/${addHwNSN}/${addHwNSN}/${addHwNSN}`, { method: 'POST' })
-  //         .then(response => resolve(response));
-  //     }));
+    Promise.all(promises)
+      .then((responses) => {
+        handleCloseDelete();
+        fetch('http://localhost:3002/gethardware/')
+          .then(response => response.json())
+          .then(data => setRows(data))
+      });
+  }
 
-  //   }
+  const editHardware = async () => {
+    let promises = [];
 
-  //   Promise.all(promises)
-  //     .then((responses) => {
-  //       console.log(responses);
-  //       handleClose();
-  //       fetch(`http://localhost:3002/edithardware/`)
-  //         .then(response => response.json())
-  //         .then(data => setRows(data))
-  //     });
-  // }
+    for (let row of rows) {
+      if (!selectedRows.includes(row.id)) {
+        continue;
+      }
+      let urlAddHwPN = addHwPN === '' ? SET_TO_EMPTY : addHwPN
+      let urlAddHwDescr = addHwDescr === '' ? SET_TO_EMPTY : addHwDescr;
+      let urlAddHwLocation = addHwLocation === '' ? SET_TO_EMPTY : addHwLocation;    
+      let urlAddHwMeasure = addHwMeasure === '' ? SET_TO_EMPTY : addHwMeasure;
+      let urlAddHwQtyAvailable = addHwQtyAvailable === '' ? SET_TO_EMPTY : addHwQtyAvailable;
+      let urlAddHwQtyLowThreshold = addHwQtyLowThreshold === '' ? SET_TO_EMPTY : addHwQtyLowThreshold;
+
+      promises.push(new Promise((resolve, reject) => {
+        fetch(`http://localhost:3002/edithardware/${oldHwNsn}/${editHwNsn}/${urlAddHwPN}/${urlAddHwDescr}/${urlAddHwLocation}/${urlAddHwMeasure}/${urlAddHwQtyAvailable}/${urlAddHwQtyLowThreshold}`, { method: 'PATCH' })
+          .then(response => resolve(response));
+      }));
+    }
+
+    Promise.all(promises)
+      .then((responses) => {
+        handleCloseEdit();
+        fetch(`http://localhost:3002/gethardware/`)
+          .then(response => response.json())
+          .then(data => setRows(data))
+      });
+  }
 
   return (
     <Grid item xs={12} md={6}>
@@ -183,22 +269,28 @@ export default function Hardware() {
               </IconButton>
             </Grid>
             <Grid item xs={12} sm={6} md={12} lg={7}>
-              <Button variant='outlined'
-                onClick={() => handleOpenAdd()}>Add</Button>
+              <Button 
+              variant='outlined'
+                onClick={() => handleOpenAdd()}
+                >
+                Add</Button>
               <Button
                 variant='outlined'
+                onClick={() => handleOpenEdit()}
                 disabled={selectedRows.length !== 1}
               >
                 Edit
               </Button>
               <Button
                 variant='outlined'
-                disabled={selectedRows.length === 0}
+                onClick={() => handleOpenDelete()}
+                disabled={selectedRows.length !== 1}
               >
                 Remove
               </Button>
             </Grid>
           </Grid>
+          {/*/ Add Modal */}
           <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
@@ -228,6 +320,63 @@ export default function Hardware() {
                   onClick={() => { addHardware() }}
                 >
                   Add New HardWare</Button>
+              </div>
+            </Fade>
+          </Modal> 
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.Modal}
+            open={openEdit}
+            onClose={handleCloseEdit}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={openEdit}>
+              <div className={classes.ModalPaper}>
+                <h2 id="transition-modal-title">Edit HardWare </h2>
+                <TextField onChange={(event) => setEditHwNsn(event.target.value)} value={editHwNsn} placeholder='Enter Hardware NSN'></TextField>
+                <TextField onChange={(event) => setAddHwPN(event.target.value)} value={addHwPN} placeholder='Enter Hardware PN'></TextField>
+                <TextField onChange={(event) => setAddHwDescr(event.target.value)} value={addHwDescr} placeholder='Describe Hardware'></TextField>
+                <TextField onChange={(event) => setAddHwLocation(event.target.value)} value={addHwLocation} placeholder='Enter Hardware Storage Location'></TextField>
+                <TextField onChange={(event) => setAddHwMeasure(event.target.value)} value={addHwMeasure} placeholder='Enter Hardware Unit of Measure'></TextField>
+                <TextField onChange={(event) => setAddHwQtyAvailable(event.target.value)} value={addHwQtyAvailable} placeholder='Enter Hardware Quantity'></TextField>
+                <TextField onChange={(event) => setAddHwQtyLowThreshold(event.target.value)} value={addHwQtyLowThreshold} placeholder='Enter Quantity Low Threshold'></TextField>
+                <Button
+                  className={classes.ModalButton}
+                  variant='outlined'
+                  disabled={editHwNsn === ''}
+                  onClick={() => { editHardware() }}
+                >
+                  Edit HardWare</Button>
+              </div>
+            </Fade>
+          </Modal> 
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            className={classes.Modal}
+            open={openDelete}
+            onClose={handleCloseDelete}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={openDelete}>
+              <div className={classes.ModalPaper}>
+                <h2 id="transition-modal-title">Delete HardWare By NSN</h2>
+                <TextField onChange={(event) => setDeleteHwNsn(event.target.value)} value={deleteHwNsn} placeholder='Enter HW NSN'></TextField>
+                <Button
+                  className={classes.ModalButton}
+                  variant='outlined'
+                  onClick={() => { deleteHardware() }}
+                >
+                  Delete HardWare By NSN</Button>
               </div>
             </Fade>
           </Modal>

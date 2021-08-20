@@ -190,7 +190,7 @@ app.get('/gethardware', function (req, res) {
             })
         } else {
             if (isNaN(parseInt(hw1ToFind))) {
-                knex.select([{ id: 'nsn' }, 'nsn', 'pn', 'location', 'qty_available'])
+                knex.select([{ id: 'nsn' }, '*'])
                     .from('hardware')
                     .where('pn', 'ILIKE', `%${hw1ToFind}%`)
                     .then((data) => {
@@ -208,7 +208,7 @@ app.get('/gethardware', function (req, res) {
                         });
                     });
             } else {
-                knex.select([{ id: 'nsn' }, 'nsn', 'pn', 'location', 'qty_available'])
+                knex.select([{ id: 'nsn' }, '*'])
                     .from('hardware')
                     .where('nsn', parseInt(hw1ToFind))
                     .then((data) => {
@@ -228,7 +228,7 @@ app.get('/gethardware', function (req, res) {
             }
         }
     } else {
-        knex.select([{ id: 'nsn' }, 'nsn', 'pn', 'location', 'qty_available'])
+        knex.select([{ id: 'nsn' }, '*'])
             .from('hardware')
             .then((data) => {
                 res.status(200).json(data)
@@ -279,19 +279,49 @@ app.post('/addhardware/:nsn/:pn/:descr/:location/:unit_of_measure/:qty_available
     }
 })
 
+app.patch('/edithardware/:oldHwNsn/:edit_HwNSN/:addHwPn/:addHwDescr/:addHwLocation/:addHwMeasure/:addHwQtyAvailable/:addHwQtyLowThreshold', function (req, res) {
+    if (req.params.edit_HwNSN) {
+        knex('hardware')
+            .where({ nsn:req.params.oldHwNsn})
+            .update({ nsn : req.params.edit_HwNSN, pn:req.params.addHwPn, descr:req.params.addHwDescr,location: req.params.addHwLocation, unit_of_measure: req.params.addHwMeasure, qty_available: req.params.addHwQtyAvailable, qty_low_threshold:req.params.addHwQtyLowThreshold})
+            .returning('*')
+            .then((data) => {
+                if (data.length === 1) {
+                    res.status(200).json(data);
+                }
+                else if (data.length === 0) {
+                    res.status(404).json({ message: "Not found." });
+                }
+                else {
+                    res.status(500).json({ message: "Das not good homie." });
+                }
+            })
+            .catch((err) => {
+                res.status(500).json({ message: "Could not update the database." });
+            });
+
+    }
+    else {
+        res.status(402).json({ message: "Bad request." });
+    }
+
+})
+
+
 
 //Delete a piece of hardware from the database;
 app.delete('/deletehardware/:nsn', function (req,res) {
+    if (req.params.nsn) {
     knex('hardware')
     .where({nsn : req.params.nsn})
     .del()
-    .returning('Your Data Has been Deleted')
-    .then ( (data) => {
+    .then((data) => {
         res.status.status(200).json(data)
     })
     .catch((err) => {
         res.status(500).json({ message: "Could not update the database." });
     });
+    }
 })
 
 // Check out a tool, given the tool id, and man number of the person checking out the tool.
