@@ -5,7 +5,6 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
-import Button from '@material-ui/core/Button';
 import { DataGrid } from '@material-ui/data-grid';
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +44,7 @@ const columns = [
 
 
 
-export default function BrokenTools() {
+export default function BrokenTools({ isServStatusChanged, setIsServStatusChanged }) {
   const classes = useStyles();
   const [rows, setRows] = useState([]);
   const [searchValue, setSearchValue] = useState('');
@@ -60,9 +59,12 @@ export default function BrokenTools() {
     } else {
       fetch('http://localhost:3002/AllToolsByStatus')
         .then(response => response.json())
-        .then(data => setRows(data))
+        .then(data => {
+          setRows(data)
+          setIsServStatusChanged(false);
+        })
     }
-  }, [finalSearchValue])
+  }, [finalSearchValue, isServStatusChanged, setIsServStatusChanged])
 
   return (
     <Grid item xs={12} md={6}>
@@ -70,8 +72,8 @@ export default function BrokenTools() {
         <Grid container>
           <Grid className={classes.ToolMenu} item xs={12}>
             <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.ToolSearchTextField} placeholder='Search by Tool ID'></TextField>
-            <IconButton>
-              <SearchIcon onClick={() => setFinalSearchValue(searchValue)} />
+            <IconButton onClick={() => setFinalSearchValue(searchValue)} >
+              <SearchIcon />
             </IconButton>
           </Grid>
           <Grid className={classes.ToolTable} item xs={12}>

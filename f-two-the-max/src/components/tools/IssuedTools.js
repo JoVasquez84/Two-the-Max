@@ -136,7 +136,7 @@ export default function IssuedTools() {
   return (
     <Paper className={classes.IssuedTools} >
       <Grid container>
-        <Grid className={classes.ToolMenu} item xs={12} md={6} >
+        <Grid item xs={12}>
           <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.ToolSearchTextField} placeholder='Search by Man# or Name'></TextField>
           <IconButton>
             <SearchIcon onClick={() => setFinalSearchValue(searchValue)} />

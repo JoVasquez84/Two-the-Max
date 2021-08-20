@@ -158,7 +158,6 @@ schema: table.integer('man_number').primary();
 */
 
 app.post('/addpersonnel/:manNumber/:fName/:lName', function (req, res) {
-    console.log('here')
     if (req.params.manNumber && req.params.fName && req.params.lName) {
         knex('personnel')
             .insert({
@@ -172,8 +171,7 @@ app.post('/addpersonnel/:manNumber/:fName/:lName', function (req, res) {
                 res.status(500).json({ message: "Could not update the database." });
             });
     }
-}
-)
+})
 
 
 
@@ -286,8 +284,6 @@ app.post('/addhardware/:nsn/:pn/:descr/:location/:unit_of_measure/:qty_available
 // UPDATE tools SET checked_out_to=':manNumber' WHERE tool_id=':toolId';
 
 app.patch('/checkouttool/:toolId/:manNumber', function (req, res) {
-    let result;
-    console.log('here')
     if (req.params.toolId && req.params.manNumber) {
         knex('tools')
             .where({ tool_id: req.params.toolId })
@@ -414,7 +410,6 @@ app.get('/AllToolsByStatus', function (req, res) {
         let brokenToolToFind = req.query.search;
         let regex = /[\w\s]+$/;
         let matches = brokenToolToFind.match(regex);
-        console.log(brokenToolToFind)
         console.log("the regex results", matches);
         if (!matches) {
             console.log('invalid search');
@@ -448,6 +443,82 @@ app.get('/AllToolsByStatus', function (req, res) {
             .then((data) => {
                 res.status(200).json(data)
             });
+    }
+})
+
+//add in a new tool with tool id and description
+/*insert into tools values ( tool_id, descr, checked_out_to, serv_status)
+schema: table.increments('id');
+            table.string('tool_id');
+            table.string('descr');
+            table.integer('checked_out_to'); // Come back to make this a foreign key.
+            table.integer('serv_status');
+            table.foreign('checked_out_to').references('man_number').inTable('personnel');
+*/
+app.post('/addTool/:toolId/:descr/', function (req, res) {
+    let toolId = req.params.toolId;
+    let descr = req.params.descr;
+    if (toolId && descr) {
+        knex('tools')
+            .insert({
+                tool_id: toolId,
+                descr: descr
+            })
+            .returning('*')
+            .then((data) => res.status(200).json(data))
+            .catch((err) => {
+                res.status(500).json({ message: "Could not update the database." });
+            });
+    }
+})
+
+app.patch('/editTool/:oldToolId/', function (req, res) {
+    console.log(req.query.checked_out_to === '')
+    console.log(typeof req.query.checked_out_to)
+    console.log(typeof req.query.serv_status)
+    let oldToolId = req.params.oldToolId;
+    let newToolId = req.query.new_tool_id;
+    let descr = req.query.descr;
+    let checkedOutTo = req.query.checked_out_to;
+    let servStatus = req.query.serv_status;
+    let editTool = {};
+    if (newToolId !== undefined) {
+        editTool.tool_id = newToolId
+    }
+    if (descr !== undefined) {
+        editTool.descr = descr === '' ? null : descr
+    }
+    if (checkedOutTo !== undefined) {
+        editTool.checked_out_to = checkedOutTo === '' ? null : checkedOutTo
+    }
+    if (servStatus !== undefined) {
+        editTool.serv_status = servStatus === '' ? null : servStatus
+    }
+
+    console.log('editTool: ', editTool)
+    if (oldToolId) {
+        knex('tools')
+            .where({ tool_id: oldToolId })
+            .update(editTool)
+            .returning('*')
+            .then((data) => res.status(200).json(data))
+            .catch((err) => {
+                res.status(500).json({ message: "Could not update the database." });
+            });
+    }
+})
+
+//delete a tool from tools table
+app.delete('/removeTool/:toolId/', function (req, res) {
+    let toolId = req.params.toolId
+    if (toolId) {
+        knex('tools')
+            .where('tool_id', toolId)
+            .del()
+            .then((data) => res.status(200).json(data))
+            .catch(err => {
+                res.status(500).json({ message: "Could not delete from the database." });
+            })
     }
 })
 
