@@ -72,11 +72,22 @@ const columns = [
 export default function AllTools({ setIsServStatusChanged }) {
   const classes = useStyles();
   const [rows, setRows] = useState([]);
+
+  //State for Search
+  const [searchValue, setSearchValue] = useState('');
+  const [finalSearchValue, setFinalSearchValue] = useState('')
+
   useEffect(() => {
-    fetch('http://localhost:3002/AllTools')
-      .then(response => response.json())
-      .then(data => setRows(data));
-  }, [setRows]);
+    if (finalSearchValue !== '') {
+      fetch(`http://localhost:3002/AllTools?search=${finalSearchValue}`)
+        .then(response => response.json())
+        .then(data => setRows(data))
+    } else {
+      fetch('http://localhost:3002/AllTools')
+        .then(response => response.json())
+        .then(data => setRows(data));
+    }
+  }, [finalSearchValue]);
 
 
   const [selectedRows, setSelectedRows] = useState([]);
@@ -141,7 +152,7 @@ export default function AllTools({ setIsServStatusChanged }) {
 
   const editTool = async () => {
     let new_tool_id = oldToolId !== toolId ? `new_tool_id=${toolId}` : '';
-    let descr = `&descr=${description}`;
+    let descr = description !== null ? `&descr=${description}` : '';
     let checked_out_to = checkoutToManNumber !== null ? `&checked_out_to=${checkoutToManNumber}` : '';
     let serv_status = servStatus !== null ? `&serv_status=${servStatus}` : '';
     if (serv_status !== null) {
@@ -207,8 +218,8 @@ export default function AllTools({ setIsServStatusChanged }) {
     <Paper className={classes.AllTools} >
       <Grid container>
         <Grid item xs={12} sm={6} md={4} lg={3}>
-          <TextField className={classes.ToolSearchTextField} placeholder='Search Tool ID / Name'></TextField>
-          <IconButton>
+          <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.ToolSearchTextField} placeholder='Search Tool ID / Name'></TextField>
+          <IconButton onClick={() => setFinalSearchValue(searchValue)}>
             <SearchIcon />
           </IconButton>
         </Grid>
