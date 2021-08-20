@@ -138,8 +138,8 @@ export default function IssuedTools() {
       <Grid container>
         <Grid item xs={12}>
           <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.ToolSearchTextField} placeholder='Search by Man# or Name'></TextField>
-          <IconButton>
-            <SearchIcon onClick={() => setFinalSearchValue(searchValue)} />
+          <IconButton onClick={() => setFinalSearchValue(searchValue)}>
+            <SearchIcon />
           </IconButton>
           <Button
             variant='outlined'

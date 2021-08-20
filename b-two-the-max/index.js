@@ -397,11 +397,42 @@ app.get('/IssuedTools/:manNumber', (req, res) => {
 });
 
 app.get('/AllTools', function (req, res) {
-    knex.select('*')
-        .from('tools')
-        .then((data) => {
-            res.status(200).json(data)
-        });
+    if (req.query.search) {
+        let brokenToolToFind = req.query.search;
+        let regex = /[\w\s]+$/;
+        let matches = brokenToolToFind.match(regex);
+        console.log("the regex results", matches);
+        if (!matches) {
+            console.log('invalid search');
+            res.status(400).json({
+                message: "Invalid tool name supplied",
+            })
+        } else {
+            knex.select('*')
+                .from('tools')
+                .where('tool_id', 'ILIKE', `%${brokenToolToFind}%`)
+                .then((data) => {
+                    if (data.length === 0) {
+                        res.status(404).json({
+                            message: "The data you are looking for could not be found. Please try again",
+                        });
+                    } else {
+                        res.status(200).json(data)
+                    }
+                })
+                .catch((err) => {
+                    res.status(404).json({
+                        message: "The data you are looking for could not be found. Please try again",
+                    });
+                });
+        }
+    } else {
+        knex.select('*')
+            .from('tools')
+            .then((data) => {
+                res.status(200).json(data)
+            });
+    }
 })
 //get service status and tool id from tools table to populate broken tools section
 
@@ -419,8 +450,9 @@ app.get('/AllToolsByStatus', function (req, res) {
         } else {
             knex.select(['id', 'tool_id', 'serv_status'])
                 .from('tools')
-                .where('tool_id', 'ILIKE', `%${brokenToolToFind}%`)
+                .whereNotNull('serv_status')
                 .orderBy('serv_status', 'desc')
+                .where('tool_id', 'ILIKE', `%${brokenToolToFind}%`)
                 .then((data) => {
                     if (data.length === 0) {
                         res.status(404).json({
@@ -439,6 +471,7 @@ app.get('/AllToolsByStatus', function (req, res) {
     } else {
         knex.select(['id', 'tool_id', 'serv_status'])
             .from('tools')
+            .whereNotNull('serv_status')
             .orderBy('serv_status', 'desc')
             .then((data) => {
                 res.status(200).json(data)
