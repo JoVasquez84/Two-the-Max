@@ -122,24 +122,28 @@ export default function Personnel() {
   return (
     <Paper className={classes.Personnel} >
       <Grid container>
-        <Grid className={classes.PersonnelMenu} item xs={12} md={6} >
-          <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.PersonnelSearchTextField} placeholder='Search by Man# or Name'></TextField>
-          <IconButton>
-            <SearchIcon onClick={() => setFinalSearchValue(searchValue)} />
-          </IconButton>
-          <Button
-            variant='outlined'
-            onClick={() => handleOpenAdd()}>Add</Button>
-          <Button
-            variant='outlined'
-            disabled={selectedRows.length !== 1}
-            onClick={() => handleOpenEdit()}>Edit</Button>
-          <Button
-            variant='outlined'
-            disabled={selectedRows.length === 0}
-          >
-            Remove
-          </Button>
+        <Grid className={classes.PersonnelMenu} item xs={12} container >
+          <Grid item xs={12} sm={6} md={4} lg={3}>
+            <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.PersonnelSearchTextField} placeholder='Search by Man# or Name'></TextField>
+            <IconButton onClick={() => setFinalSearchValue(searchValue)}>
+              <SearchIcon />
+            </IconButton>
+          </Grid>
+          <Grid item xs={12} sm={6} md={8} lg={9}>
+            <Button
+              variant='outlined'
+              onClick={() => handleOpenAdd()}>Add</Button>
+            <Button
+              variant='outlined'
+              disabled={selectedRows.length !== 1}
+              onClick={() => handleOpenEdit()}>Edit</Button>
+            <Button
+              variant='outlined'
+              disabled={selectedRows.length === 0}
+            >
+              Remove
+            </Button>
+          </Grid>
         </Grid>
         <Modal
           aria-labelledby="transition-modal-title"

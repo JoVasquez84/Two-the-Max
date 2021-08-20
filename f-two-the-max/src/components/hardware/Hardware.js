@@ -107,7 +107,9 @@ export default function Hardware() {
     } else {
       fetch('http://localhost:3002/gethardware/')
         .then(response => response.json())
-        .then(data => setRows(data))
+        .then(data => {
+          setRows(data)
+        })
     }
   }, [finalSearchValue])
 
@@ -173,25 +175,29 @@ export default function Hardware() {
     <Grid item xs={12} md={6}>
       <Paper className={classes.Hardware} >
         <Grid container>
-          <Grid className={classes.HardwareMenu} item xs={12} >
-            <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.HardwareSearchTextField} placeholder='Search by NSN or PN'></TextField>
-            <IconButton>
-              <SearchIcon onClick={() => setFinalSearchValue(searchValue)} />
-            </IconButton>
-            <Button variant='outlined'
-              onClick={() => handleOpenAdd()}>Add</Button>
-            <Button
-              variant='outlined'
-              disabled={selectedRows.length !== 1}
-            >
-              Edit
-            </Button>
-            <Button
-              variant='outlined'
-              disabled={selectedRows.length === 0}
-            >
-              Remove
-            </Button>
+          <Grid className={classes.HardwareMenu} item xs={12} container>
+            <Grid item xs={12} sm={6} md={12} lg={5}>
+              <TextField onChange={(event) => setSearchValue(event.target.value)} value={searchValue} className={classes.HardwareSearchTextField} placeholder='Search by NSN or PN'></TextField>
+              <IconButton onClick={() => setFinalSearchValue(searchValue)}>
+                <SearchIcon />
+              </IconButton>
+            </Grid>
+            <Grid item xs={12} sm={6} md={12} lg={7}>
+              <Button variant='outlined'
+                onClick={() => handleOpenAdd()}>Add</Button>
+              <Button
+                variant='outlined'
+                disabled={selectedRows.length !== 1}
+              >
+                Edit
+              </Button>
+              <Button
+                variant='outlined'
+                disabled={selectedRows.length === 0}
+              >
+                Remove
+              </Button>
+            </Grid>
           </Grid>
           <Modal
             aria-labelledby="transition-modal-title"

@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 // import { Link } from 'react-router-dom';
 
@@ -14,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbarTitle: {
     flex: 1,
+    align: 'center',
   },
   toolbarLink: {
     padding: theme.spacing(1),
@@ -29,12 +29,12 @@ export default function Header(props) {
     <React.Fragment>
       <Toolbar className={classes.toolbar}>
         <Grid container>
-          <Grid item md={4}>
+          <Grid item lg={4}>
             {sections.map((section) => (
-              <Button variant='contained' href={section.url}>{section.title}</Button>
+              <Button key={section.title} variant='contained' href={section.url}>{section.title}</Button>
             ))}
           </Grid>
-          <Grid item md={4}>
+          <Grid item lg={4}>
             <Typography
               component="h2"
               variant="h5"
@@ -45,7 +45,7 @@ export default function Header(props) {
               {title}
             </Typography>
           </Grid>
-          <Grid item md={4} />
+          <Grid item lg={4} />
         </Grid>
       </Toolbar>
     </React.Fragment>
