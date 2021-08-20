@@ -1,11 +1,8 @@
-// Update with your config settings.
-var dotenv = require('dotenv');
-
 module.exports = {
 
   development: {
     client: 'pg',
-    connection: 'postgres://postgres:docker@localhost:5432/twothemax'
+    connection: 'postgres://mpingleton:postgres@ping-vlu-01/tool_inventory'
   },
 
   staging: {

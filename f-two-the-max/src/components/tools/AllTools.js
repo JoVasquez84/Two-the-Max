@@ -293,7 +293,7 @@ export default function AllTools({ setIsServStatusChanged }) {
                 <Button
                   className={classes.ModalButton}
                   variant='outlined'
-                  disabled={tool}
+                  disabled={toolId}
                   onClick={() => { editTool() }}
                 >
                   Edit Tool</Button>

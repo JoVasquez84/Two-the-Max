@@ -1,11 +1,3 @@
-var dotenv = require('dotenv');
-const result = dotenv.config();
-if (result.error) {
-    throw result.error;
-}
-const { parsed: envs } = result;
-
-
 const express = require('express');
 const app = express();
 const port = 3002;
