@@ -280,6 +280,20 @@ app.post('/addhardware/:nsn/:pn/:descr/:location/:unit_of_measure/:qty_available
 })
 
 
+//Delete a piece of hardware from the database;
+app.delete('/deletehardware/:nsn', function (req,res) {
+    knex('hardware')
+    .where({nsn : req.params.nsn})
+    .del()
+    .returning('Your Data Has been Deleted')
+    .then ( (data) => {
+        res.status.status(200).json(data)
+    })
+    .catch((err) => {
+        res.status(500).json({ message: "Could not update the database." });
+    });
+})
+
 // Check out a tool, given the tool id, and man number of the person checking out the tool.
 // UPDATE tools SET checked_out_to=':manNumber' WHERE tool_id=':toolId';
 
