@@ -51,20 +51,20 @@ export default function BrokenTools({ isServStatusChanged, setIsServStatusChange
   const [finalSearchValue, setFinalSearchValue] = useState('')
 
 
-  useEffect(() => {
-    if (finalSearchValue !== '') {
-      fetch(`http://localhost:3002/AllToolsByStatus?search=${finalSearchValue}`)
-        .then(response => response.json())
-        .then(data => setRows(data))
-    } else {
-      fetch('http://localhost:3002/AllToolsByStatus')
-        .then(response => response.json())
-        .then(data => {
-          setRows(data)
-          setIsServStatusChanged(false);
-        })
-    }
-  }, [finalSearchValue, isServStatusChanged, setIsServStatusChanged])
+  // useEffect(() => {
+  //   if (finalSearchValue !== '') {
+  //     fetch(`http://localhost:3002/AllToolsByStatus?search=${finalSearchValue}`)
+  //       .then(response => response.json())
+  //       .then(data => setRows(data))
+  //   } else {
+  //     fetch('http://localhost:3002/AllToolsByStatus')
+  //       .then(response => response.json())
+  //       .then(data => {
+  //         setRows(data)
+  //         setIsServStatusChanged(false);
+  //       })
+  //   }
+  // }, [finalSearchValue, isServStatusChanged, setIsServStatusChanged])
 
   return (
     <Grid item xs={12} md={6}>

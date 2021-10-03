@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+import Navbar from './navBar/Navbar'
+import { makeStyles, Toolbar, Grid, Typography,Button } from '@material-ui/core';
 // import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({

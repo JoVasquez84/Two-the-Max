@@ -90,17 +90,17 @@ export default function IssuedTools() {
   const [open, setOpen] = useState(false);
   const [transferManNumberTarget, setTransferManNumberTarget] = useState('')
 
-  useEffect(() => {
-    if (finalSearchValue !== '') {
-      fetch(`http://localhost:3002/IssuedTools?search=${finalSearchValue}`)
-        .then(response => response.json())
-        .then(data => setRows(data))
-    } else {
-      fetch('http://localhost:3002/IssuedTools/')
-        .then(response => response.json())
-        .then(data => setRows(data))
-    }
-  }, [finalSearchValue])
+  // useEffect(() => {
+  //   if (finalSearchValue !== '') {
+  //     fetch(`http://localhost:3002/IssuedTools?search=${finalSearchValue}`)
+  //       .then(response => response.json())
+  //       .then(data => setRows(data))
+  //   } else {
+  //     fetch('http://localhost:3002/IssuedTools/')
+  //       .then(response => response.json())
+  //       .then(data => setRows(data))
+  //   }
+  // }, [finalSearchValue])
 
   const handleOpen = () => {
     setOpen(true);

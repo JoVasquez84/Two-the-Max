@@ -97,17 +97,17 @@ export default function Personnel() {
   };
 
 
-  useEffect(() => {
-    if (finalSearchValue !== '') {
-      fetch(`http://localhost:3002/getpersonnel?search=${finalSearchValue}`)
-        .then(response => response.json())
-        .then(data => setRows(data))
-    } else {
-      fetch('http://localhost:3002/getpersonnel/')
-        .then(response => response.json())
-        .then(data => setRows(data))
-    }
-  }, [finalSearchValue])
+  // useEffect(() => {
+  //   if (finalSearchValue !== '') {
+  //     fetch(`http://localhost:3002/getpersonnel?search=${finalSearchValue}`)
+  //       .then(response => response.json())
+  //       .then(data => setRows(data))
+  //   } else {
+  //     fetch('http://localhost:3002/getpersonnel/')
+  //       .then(response => response.json())
+  //       .then(data => setRows(data))
+  //   }
+  // }, [finalSearchValue])
 
   const addPersonnel = async () => {
     fetch(`http://localhost:3002/addpersonnel/${addManNum}/${addFName}/${addLName}`, { method: 'POST' })

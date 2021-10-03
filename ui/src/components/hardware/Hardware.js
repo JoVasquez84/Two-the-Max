@@ -99,19 +99,19 @@ export default function Hardware() {
   const [addHwQtyLowThreshold, setAddHwQtyLowThreshold] = useState('');
 
 
-  useEffect(() => {
-    if (finalSearchValue !== '') {
-      fetch(`http://localhost:3002/gethardware?search=${finalSearchValue}`)
-        .then(response => response.json())
-        .then(data => setRows(data))
-    } else {
-      fetch('http://localhost:3002/gethardware/')
-        .then(response => response.json())
-        .then(data => {
-          setRows(data)
-        })
-    }
-  }, [finalSearchValue])
+  // useEffect(() => {
+  //   if (finalSearchValue !== '') {
+  //     fetch(`http://localhost:3002/gethardware?search=${finalSearchValue}`)
+  //       .then(response => response.json())
+  //       .then(data => setRows(data))
+  //   } else {
+  //     fetch('http://localhost:3002/gethardware/')
+  //       .then(response => response.json())
+  //       .then(data => {
+  //         setRows(data)
+  //       })
+  //   }
+  // }, [finalSearchValue])
 
   const handleOpenAdd = () => {
     setOpenAdd(true);

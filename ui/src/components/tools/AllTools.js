@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
-import SearchIcon from '@material-ui/icons/Search';
-import Button from '@material-ui/core/Button';
-import { DataGrid } from '@material-ui/data-grid';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
+import { useState, useEffect } from 'react'
+import {
+  makeStyles,
+  Paper,
+  Grid,
+  TextField,
+  IconButton,
+  Button,
+  Modal,
+  Backdrop,
+  Fade } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search'
+import { DataGrid } from '@material-ui/data-grid'
 
 const useStyles = makeStyles((theme) => ({
   AllTools: {
@@ -70,44 +71,44 @@ const columns = [
 ];
 
 export default function AllTools({ setIsServStatusChanged }) {
-  const classes = useStyles();
-  const [rows, setRows] = useState([]);
+  const classes = useStyles()
+  const [rows, setRows] = useState([])
 
   //State for Search
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState('')
   const [finalSearchValue, setFinalSearchValue] = useState('')
 
-  useEffect(() => {
-    if (finalSearchValue !== '') {
-      fetch(`http://localhost:3002/AllTools?search=${finalSearchValue}`)
-        .then(response => response.json())
-        .then(data => setRows(data))
-    } else {
-      fetch('http://localhost:3002/AllTools')
-        .then(response => response.json())
-        .then(data => setRows(data));
-    }
-  }, [finalSearchValue]);
+  // useEffect(() => {
+  //   if (finalSearchValue !== '') {
+  //     fetch(`http://localhost:3002/AllTools?search=${finalSearchValue}`)
+  //       .then(response => response.json())
+  //       .then(data => setRows(data))
+  //   } else {
+  //     fetch('http://localhost:3002/AllTools')
+  //       .then(response => response.json())
+  //       .then(data => setRows(data));
+  //   }
+  // }, [finalSearchValue]);
 
 
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [openAdd, setOpenAdd] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
-  const [openCheckout, setOpenCheckout] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([])
+  const [openAdd, setOpenAdd] = useState(false)
+  const [openEdit, setOpenEdit] = useState(false)
+  const [openCheckout, setOpenCheckout] = useState(false)
 
   //Database columns
-  const [toolId, setToolId] = useState('');
-  const [description, setDescription] = useState('');
+  const [toolId, setToolId] = useState('')
+  const [description, setDescription] = useState('')
   const [checkoutToManNumber, setCheckoutToManNumber] = useState('')
-  const [servStatus, setServStatus] = useState('');
+  const [servStatus, setServStatus] = useState('')
   //Only used for edit so we can find right tool and update
-  const [oldToolId, setOldToolId] = useState('');
+  const [oldToolId, setOldToolId] = useState('')
 
   const handleOpenEdit = () => {
-    setOpenEdit(true);
+    setOpenEdit(true)
     for (let row of rows) {
       if (!selectedRows.includes(row.id)) {
-        continue;
+        continue
       }
       setToolId(row.tool_id);
       setOldToolId(row.tool_id);
@@ -118,50 +119,50 @@ export default function AllTools({ setIsServStatusChanged }) {
   }
 
   const handleCloseAdd = () => {
-    setOpenAdd(false);
-    setToolId('');
-    setDescription('');
+    setOpenAdd(false)
+    setToolId('')
+    setDescription('')
   }
 
   const handleCloseEdit = () => {
-    setOpenEdit(false);
-    setToolId('');
-    setDescription('');
-    setCheckoutToManNumber('');
-    setServStatus('');
+    setOpenEdit(false)
+    setToolId('')
+    setDescription('')
+    setCheckoutToManNumber('')
+    setServStatus('')
   }
 
   const handleCloseCheckout = () => {
-    setOpenCheckout(false);
-    setCheckoutToManNumber('');
+    setOpenCheckout(false)
+    setCheckoutToManNumber('')
   }
 
   const addTool = async () => {
     let urlPath = `addTool/${toolId}/${description}`
     fetch(`http://localhost:3002/${urlPath}`, { method: 'POST' })
       .then((responses) => {
-        handleCloseAdd();
+        handleCloseAdd()
         fetch('http://localhost:3002/AllTools/')
           .then(response => response.json())
           .then(data => {
-            setRows(data);
-            setIsServStatusChanged(true);
+            setRows(data)
+            setIsServStatusChanged(true)
           })
       });
   }
 
   const editTool = async () => {
-    let new_tool_id = oldToolId !== toolId ? `new_tool_id=${toolId}` : '';
-    let descr = description !== null ? `&descr=${description}` : '';
-    let checked_out_to = checkoutToManNumber !== null ? `&checked_out_to=${checkoutToManNumber}` : '';
-    let serv_status = servStatus !== null ? `&serv_status=${servStatus}` : '';
+    let new_tool_id = oldToolId !== toolId ? `new_tool_id=${toolId}` : ''
+    let descr = description !== null ? `&descr=${description}` : ''
+    let checked_out_to = checkoutToManNumber !== null ? `&checked_out_to=${checkoutToManNumber}` : ''
+    let serv_status = servStatus !== null ? `&serv_status=${servStatus}` : ''
     if (serv_status !== null) {
       setIsServStatusChanged(true)
     }
     let urlPath = `editTool/${oldToolId}/?${new_tool_id}${descr}${checked_out_to}${serv_status}`
     fetch(`http://localhost:3002/${urlPath}`, { method: 'PATCH' })
       .then((responses) => {
-        handleCloseEdit();
+        handleCloseEdit()
         fetch('http://localhost:3002/AllTools/')
           .then(response => response.json())
           .then(data => setRows(data))
@@ -170,22 +171,22 @@ export default function AllTools({ setIsServStatusChanged }) {
 
   //if manNum is empty string, we do checkin
   const checkoutTools = async (manNum) => {
-    var promises = [];
+    var promises = []
 
     for (let row of rows) {
       if (!selectedRows.includes(row.id)) {
-        continue;
+        continue
       }
       promises.push(new Promise((resolve, reject) => {
         let urlPath = manNum === '' ? `checkintool/${row.tool_id}/` : `checkouttool/${row.tool_id}/${manNum}`
         fetch(`http://localhost:3002/${urlPath}`, { method: 'PATCH' })
-          .then(response => resolve(response));
-      }));
+          .then(response => resolve(response))
+      }))
     }
 
     Promise.all(promises)
       .then((responses) => {
-        handleCloseCheckout();
+        handleCloseCheckout()
         fetch('http://localhost:3002/AllTools/')
           .then(response => response.json())
           .then(data => setRows(data))
@@ -193,17 +194,17 @@ export default function AllTools({ setIsServStatusChanged }) {
   }
 
   const removeTools = async () => {
-    var promises = [];
+    var promises = []
 
     for (let row of rows) {
       if (!selectedRows.includes(row.id)) {
-        continue;
+        continue
       }
       promises.push(new Promise((resolve, reject) => {
         let urlPath = `removeTool/${row.tool_id}/`
         fetch(`http://localhost:3002/${urlPath}`, { method: 'DELETE' })
-          .then(response => resolve(response));
-      }));
+          .then(response => resolve(response))
+      }))
     }
 
     Promise.all(promises)
